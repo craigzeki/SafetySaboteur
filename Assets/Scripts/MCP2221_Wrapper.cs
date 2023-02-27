@@ -8,7 +8,6 @@ using UnityEditor.PackageManager;
 using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 using Microsoft.Win32.SafeHandles;
 using System.Runtime.ConstrainedExecution;
-using ZekstersLab.MCP2221;
 
 
 namespace ZekstersLab.MCP2221
@@ -326,6 +325,9 @@ namespace ZekstersLab.MCP2221
 
         public void Destroy()
         {
+            if(_uVPHandle == null) return;
+            if(_uVPHandle.IsInvalid) return;
+
             Debug.Log("Start of MCP2221_Wrapper OnDestroy");
             for (int i = 0; i < _pinFunctions.Length; i++)
             {
