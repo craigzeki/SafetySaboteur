@@ -81,7 +81,7 @@ public class ZekiController : MonoBehaviour
 
         while(true)
         {
-            while ((percent <= 100) && (_mcpWrapper != null))
+            while ((percent <= 25) && (_mcpWrapper != null))
             {
 
                 _mcpWrapper.SetLEDBrightness(MCP2221_Wrapper.LED.LED_0, percent);

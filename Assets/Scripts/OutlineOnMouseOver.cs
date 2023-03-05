@@ -14,7 +14,7 @@ public class OutlineOnMouseOver : MonoBehaviour
         outline = GetComponent<Outline>();
         foreach(Renderer renderer in GetComponentsInChildren<Renderer>())
         {
-            if (renderer.gameObject == this.gameObject) continue; //skip the first item in the list (the gameobject with this script!)
+            //if (renderer.gameObject == this.gameObject) continue; //skip the first item in the list (the gameobject with this script!)
             OutlineHelper temp =  renderer.gameObject.AddComponent<OutlineHelper>();
             temp.RootOutline = outline;
         }
@@ -24,17 +24,18 @@ public class OutlineOnMouseOver : MonoBehaviour
         outline.enabled = false;
     }
 
-    private void OnMouseEnter()
-    {
-        outline.enabled = true;
+    //! OnMouseEnter and Exit are handled in the OutlineHelper script which will be added automatically during Awake
+    //public void OnMouseEnter()
+    //{
+    //    outline.enabled = true;
 
-        ZekiController.Instance.TestLED();
-    }
+        
+    //}
 
-    private void OnMouseExit()
-    {
-        outline.enabled = false;
-    }
+    //public void OnMouseExit()
+    //{
+    //    outline.enabled = false;
+    //}
 
     
 }

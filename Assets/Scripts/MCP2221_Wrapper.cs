@@ -176,7 +176,7 @@ namespace ZekstersLab.MCP2221
 
         private const byte GPIO_AW9523_P0_CONFIG_OUTPUTS = 0x00;
         //private const byte GPIO_AW9523_GLOBAL_CTRL_SETTING = 0x00;
-        private const byte GPIO_AW9523_GLOBAL_CTRL_SETTING = 0x01;
+        private const byte GPIO_AW9523_GLOBAL_CTRL_SETTING = 0x03;
         private const byte GPIO_AW9523_P0_MODE = 0x00; //LED Mode
         private const uint GPIO_AW9523_I2C_SPEED = 200000; //200 kbps = 200khz
         private const float GPIO_AW9523_LED_ONE_PERCENT = 255 / 100;

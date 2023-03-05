@@ -10,6 +10,7 @@ public class OutlineHelper : MonoBehaviour
     {
         if (RootOutline == null) return;
         RootOutline.enabled = true;
+        ZekiController.Instance.TestLED();
     }
 
     private void OnMouseExit()
