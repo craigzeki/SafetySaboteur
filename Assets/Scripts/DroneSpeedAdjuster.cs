@@ -18,7 +18,7 @@ public class DroneSpeedAdjuster : MonoBehaviour
     {
         if (_myDroneMovement == null) return;
 
-        int layerMask = 1 << 8;
+        int layerMask = 1 << 7; //Drones layer
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 1, layerMask))
         {

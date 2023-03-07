@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8548550169154358525}
   - component: {fileID: 8687834246371273012}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: SpeedAdjuster
   m_TagString: Untagged
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}

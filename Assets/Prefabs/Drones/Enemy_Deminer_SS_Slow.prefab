@@ -17,7 +17,8 @@ GameObject:
   - component: {fileID: 8913073366504689767}
   - component: {fileID: 8913073366504689761}
   - component: {fileID: 7554373691204633229}
-  m_Layer: 8
+  - component: {fileID: 4152419980132247937}
+  m_Layer: 7
   m_Name: Enemy_Deminer_SS_Slow
   m_TagString: Drone
   m_Icon: {fileID: 0}
@@ -178,6 +179,7 @@ MonoBehaviour:
   _hoverYOffset: 0.2
   _moving: 0
   _droneID: 0
+  _survivedDistanceThreshold: 0.1
 --- !u!64 &7554373691204633229
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -192,6 +194,19 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 82e0bf5e4d696a545bd78c7fcf9c5258, type: 3}
+--- !u!114 &4152419980132247937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8913073365006524126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a5a6afaf80069348aa068ae586fb3ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawMeshTreeOnStart: 0
 --- !u!1 &8913073365006524354
 GameObject:
   m_ObjectHideFlags: 0
@@ -204,7 +219,7 @@ GameObject:
   - component: {fileID: 8913073365003526662}
   - component: {fileID: 8913073365004568952}
   - component: {fileID: 6895493716729571823}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Enemy_Deminer_Up_Speed
   m_TagString: Drone
   m_Icon: {fileID: 0}
@@ -301,7 +316,8 @@ GameObject:
   - component: {fileID: 8913073365003424948}
   - component: {fileID: 8913073365004102816}
   - component: {fileID: 4135172855031219513}
-  m_Layer: 8
+  - component: {fileID: 3752095580235932653}
+  m_Layer: 7
   m_Name: Enemy_Deminer_Up_Gun
   m_TagString: Drone
   m_Icon: {fileID: 0}
@@ -387,6 +403,19 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300006, guid: 82e0bf5e4d696a545bd78c7fcf9c5258, type: 3}
+--- !u!114 &3752095580235932653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8913073365006564706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a5a6afaf80069348aa068ae586fb3ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawMeshTreeOnStart: 0
 --- !u!1 &8913073365006611974
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,7 +428,8 @@ GameObject:
   - component: {fileID: 8913073365003450230}
   - component: {fileID: 8913073365004063778}
   - component: {fileID: 4071538404532896023}
-  m_Layer: 8
+  - component: {fileID: 3675120858665341967}
+  m_Layer: 7
   m_Name: Enemy_Deminer_Up_Armor
   m_TagString: Drone
   m_Icon: {fileID: 0}
@@ -485,6 +515,19 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300004, guid: 82e0bf5e4d696a545bd78c7fcf9c5258, type: 3}
+--- !u!114 &3675120858665341967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8913073365006611974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a5a6afaf80069348aa068ae586fb3ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawMeshTreeOnStart: 0
 --- !u!1 &8913073365885927234
 GameObject:
   m_ObjectHideFlags: 0
@@ -494,7 +537,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8913073365885927233}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -527,6 +570,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SpeedAdjuster
+      objectReference: {fileID: 0}
+    - target: {fileID: 1108000622541798970, guid: c01131ea49eba064a9cf8c1874653819,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8548550169154358525, guid: c01131ea49eba064a9cf8c1874653819,
         type: 3}
