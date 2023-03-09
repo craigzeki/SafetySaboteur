@@ -4,7 +4,6 @@ using UnityEngine;
 using System.Runtime.InteropServices;
 using System.Text;
 using System;
-using UnityEditor.PackageManager;
 using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 using Microsoft.Win32.SafeHandles;
 using System.Runtime.ConstrainedExecution;
