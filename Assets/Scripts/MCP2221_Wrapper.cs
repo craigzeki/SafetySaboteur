@@ -211,7 +211,19 @@ namespace ZekstersLab.MCP2221
             Debug.Log("[Mcp2221] Number of connected devices: " + _numOfDevices.ToString());
 
             _uVPHandle = MCP2221.Mcp2221_OpenByIndex(DEFAULT_VID, DEFAULT_PID, 0);
-            if (CheckResultForError(MCP2221.Mcp2221_GetLastError(), "Mcp2221_OpenByIndex")) return;
+            if (CheckResultForError(MCP2221.Mcp2221_GetLastError(), "Mcp2221_OpenByIndex"))
+            {
+                //close connections and retry
+                Debug.Log("[Mcp2221] Failed opening by Index - attempting retry - closing all handles");
+                if (CheckResultForError(MCP2221.Mcp2221_CloseAll(), "Mcp2221_CloseAll")) return;
+                Debug.Log("[Mcp2221] Closed all handles");
+                if (CheckResultForError(MCP2221.Mcp2221_GetConnectedDevices(DEFAULT_VID, DEFAULT_PID, ref _numOfDevices), "Mcp2221_GetConnectedDevices")) return;
+                Debug.Log("[Mcp2221] Number of connected devices: " + _numOfDevices.ToString());
+                _uVPHandle = MCP2221.Mcp2221_OpenByIndex(DEFAULT_VID, DEFAULT_PID, 0);
+                if (CheckResultForError(MCP2221.Mcp2221_GetLastError(), "Mcp2221_OpenByIndex")) return;
+            }
+
+
             Debug.Log("[Mcp2221] Device handle: " + _uVPHandle.ToString());
 
             if (CheckResultForError(MCP2221.Mcp2221_GetGpioSettings(_uVPHandle, RUNTIME_SETTINGS, _pinFunctions, _pinDirections, _pinValues), "Mcp2221_GetGpioSettings")) return;

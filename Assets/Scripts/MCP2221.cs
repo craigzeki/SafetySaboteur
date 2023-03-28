@@ -100,14 +100,15 @@ namespace ZekstersLab.MCP2221
 #endif
         internal extern static int Mcp2221_Close(IntPtr handle);
 
-        //*** NOT ALLOWING THIS FUNCTION DUE TO INABILITY TO THEN PROPERLY FREE HANDLE) ***
-        //#if UNITY_IPHONE
-        //    [DllImport("__Internal", SetLastError = true)]
-        //#else
-        //        [DllImport("mcp2221_dll_um.dll", SetLastError = true)]
-        //        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-        //#endif
-        //        internal extern static int Mcp2221_CloseAll();
+        //*** DANGEROUS - DUE TO INABILITY TO THEN PROPERLY FREE HANDLE) ***
+        #if UNITY_IPHONE
+            [DllImport("__Internal", SetLastError = true)]
+#else
+                [DllImport("mcp2221_dll_um.dll", SetLastError = true)]
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+#endif
+        internal extern static int Mcp2221_CloseAll();
+
 #if UNITY_IPHONE
     [DllImport("__Internal", SetLastError = true)]
 #else
