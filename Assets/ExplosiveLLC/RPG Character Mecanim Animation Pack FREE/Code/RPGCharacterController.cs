@@ -363,6 +363,8 @@ namespace RPGCharacterAnims
 
             // Forward vector relative to the camera along the x-z plane.
             var forward = Camera.main.transform.TransformDirection(Vector3.forward);
+            //CZ Mod: forward is based on character forward
+            //var forward = transform.TransformDirection(Vector3.forward);
             forward.y = 0;
             forward = forward.normalized;
 
