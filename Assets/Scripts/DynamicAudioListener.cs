@@ -4,37 +4,29 @@ using UnityEngine;
 
 public class DynamicAudioListener : MonoBehaviour
 {
-    private GameObject _player;
+    [SerializeField] float _rotationSpeed = .5f;
+
+
+    private Transform _playerAudioListenerPoint;
 
     private Coroutine _findPlayerCoroutine;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private float _duration = 0;
+    private Quaternion _target;
 
     // Update is called once per frame
     void Update()
     {
-        if(_player == null)
+        if((_playerAudioListenerPoint == null) && (GameManager.Instance.Player != null))
         {
-            if (_findPlayerCoroutine == null) _findPlayerCoroutine = StartCoroutine(FindPlayer());
+            _playerAudioListenerPoint = GameManager.Instance.Player.GetComponent<Saboteur>().PlayerAudioListener;
         }
 
-        if(_player != null)
+        if(_playerAudioListenerPoint != null)
         {
-            transform.position = _player.transform.position;
-            transform.rotation = _player.transform.rotation;
+            transform.position = _playerAudioListenerPoint.transform.position;
+            _target = _playerAudioListenerPoint.transform.rotation;
+            transform.rotation = Quaternion.Lerp(transform.rotation, _target, _rotationSpeed * Time.deltaTime); ;
         }
-
-    }
-
-    //replace below with threading as coroutine runs in same frame thread anyway and cannot do a performant yield from FindWithTag
-    IEnumerator FindPlayer()
-    {
-        _player = GameObject.FindWithTag("PlayerAudioListener");
-        _findPlayerCoroutine = null;
-        yield return null;
 
     }
 

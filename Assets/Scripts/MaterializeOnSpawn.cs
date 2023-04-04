@@ -19,6 +19,8 @@ public class MaterializeOnSpawn : MonoBehaviour
     private Renderer _renderer;
     private Material[] _tempMat = new Material[1];
 
+    public bool MaterializeComplete = false;
+
     private void Awake()
     {
         _renderer = GetComponent<Renderer>();
@@ -82,6 +84,7 @@ public class MaterializeOnSpawn : MonoBehaviour
         _thisMat.SetFloat("_Clip", _clipCurve.Evaluate(_clipCurve.keys[_clipCurve.length - 1].time));
 
         _materializeCoroutine = null;
+        MaterializeComplete = true;
         
     }
 
