@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
-public class Saboteur : MonoBehaviour
+public class Saboteur : MonoBehaviour, iTakesDamage
 {
     public enum SaboteurState
     {
@@ -130,6 +130,11 @@ public class Saboteur : MonoBehaviour
         SaboteurStateChangedEventArgs saboteurStateChangedEventArgs = new SaboteurStateChangedEventArgs();
         saboteurStateChangedEventArgs.state = state;
         StateChanged?.Invoke(this, saboteurStateChangedEventArgs);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        throw new NotImplementedException();
     }
 }
 

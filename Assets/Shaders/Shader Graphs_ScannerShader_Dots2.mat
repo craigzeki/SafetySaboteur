@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Shader Graphs_ScannerShader_Dots2
+  m_Shader: {fileID: -6465566751694194690, guid: f6b4eb34674359b4eb21cda8cd543b32,
+    type: 3}
+  m_ValidKeywords:
+  - _RECEIVE_SHADOWS_OFF
+  - _SURFACE_TYPE_TRANSPARENT
+  m_InvalidKeywords: []
+  m_LightmapFlags: 1
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap:
+    RenderType: Transparent
+  disabledShaderPasses:
+  - DepthOnly
+  - SHADOWCASTER
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BorderTexture:
+        m_Texture: {fileID: 2800000, guid: 9f74ae3919f7f9a439957292be93a684, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlphaClip: 0
+    - _Blend: 2
+    - _CastShadows: 0
+    - _Cull: 2
+    - _DotNoiseScale: 29.98
+    - _DotsOffsetX: 0.5
+    - _DotsOffsetY: 1
+    - _DotsSize: 0.52
+    - _DstBlend: 1
+    - _HexSize: 0.8
+    - _HexWidth: 0.2
+    - _IntersectionEmission: 0.48
+    - _MaskPower: 1.64
+    - _NoiseScale: 30
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _ReceiveShadows: 0
+    - _SrcBlend: 5
+    - _Surface: 1
+    - _WorkflowMode: 1
+    - _ZTest: 4
+    - _ZWrite: 0
+    - _ZWriteControl: 0
+    m_Colors:
+    - _BorderColour: {r: 4.6268606, g: 0, b: 5.987702, a: 1}
+    - _DotsTiling: {r: 30.79, g: 102.15, b: 0, a: 0}
+    - _HexColour: {r: 0, g: 1.9763064, b: 11.796079, a: 1}
+    - _HexTiling: {r: 8, g: 8, b: 0, a: 0}
+    - _NoiseSpeed: {r: 0.2, g: 0.2, b: 0, a: 0}
+  m_BuildTextureStacks: []
+--- !u!114 &2194127527484193520
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5

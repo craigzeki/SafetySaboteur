@@ -6,8 +6,11 @@ using System;
 
 // Moves along a path at constant speed.
 // Depending on the end of path instruction, will either loop, reverse, or stop at the end of the path.
-public class DroneMovement : MonoBehaviour
+public class DroneManager : MonoBehaviour, iTakesDamage
 {
+    [SerializeField] private HealthBar _healthBar;
+    [SerializeField] private float _maxHealth = 100f;
+    [SerializeField] private float _startHealth = 100f;
     [SerializeField] private uint _points;
     [SerializeField] private PathCreator _pathCreator;
     [SerializeField] private EndOfPathInstruction _endOfPathInstruction;
@@ -25,10 +28,12 @@ public class DroneMovement : MonoBehaviour
     private float _lerpT = 0f;
     private float _hoverPositionY = 0f;
 
+    private float _currentHealth = 0f;
+
     private Vector3 _newPosition = Vector3.zero;
     private float _pathY = 0f;
 
-    private DroneMovement _otherDroneMovement;
+    private DroneManager _otherDroneManager;
 
     public bool Moving { get => _moving; set => _moving = value; }
     public uint DroneId { get => _droneID; set => _droneID = value; }
@@ -36,6 +41,12 @@ public class DroneMovement : MonoBehaviour
     public float Speed { get => _speed; set => _speed = value; }
 
     public event EventHandler<uint> DroneSurvived;
+
+    private void Awake()
+    {
+        _currentHealth = _startHealth;
+        if (_healthBar != null) _healthBar.OnTargetHealthReached += HealthBarReachedTarget;
+    }
 
     void Start()
     {
@@ -74,6 +85,18 @@ public class DroneMovement : MonoBehaviour
         _newPosition = transform.position;
         _newPosition.y = _hoverPositionY;
         transform.position = _newPosition;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        _currentHealth = Mathf.Clamp(_currentHealth - damage, 0f, _maxHealth);
+        SetHealthBar();
+    }
+
+    private void SetHealthBar()
+    {
+        if (_healthBar == null) return;
+        _healthBar.SetHealthPercent(_currentHealth / _maxHealth);
     }
 
     protected virtual void OnDroneSurvived()
@@ -148,6 +171,19 @@ public class DroneMovement : MonoBehaviour
 
         _hoverPositionY = 0;
         _csvDebug.CloseFile();
+    }
+
+    private void HealthBarReachedTarget(object sender, float percent)
+    {
+        if(Mathf.Approximately(percent, 0f))
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void OnMouseDown()
+    {
+        TakeDamage(10f);
     }
 }
 

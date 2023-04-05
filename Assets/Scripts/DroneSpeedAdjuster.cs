@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class DroneSpeedAdjuster : MonoBehaviour
 {
-    private DroneMovement _otherDroneMovement;
-    private DroneMovement _myDroneMovement;
+    private DroneManager _otherDroneMovement;
+    private DroneManager _myDroneMovement;
 
     private void Awake()
     {
         if(_myDroneMovement == null)
         {
-            _myDroneMovement = GetComponentInParent<DroneMovement>();
+            _myDroneMovement = GetComponentInParent<DroneManager>();
         }
     }
     private void FixedUpdate()
@@ -22,7 +22,7 @@ public class DroneSpeedAdjuster : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 1, layerMask))
         {
-            if (hit.transform.TryGetComponent<DroneMovement>(out _otherDroneMovement))
+            if (hit.transform.TryGetComponent<DroneManager>(out _otherDroneMovement))
             {
                 _myDroneMovement.Speed = Mathf.Lerp(_myDroneMovement.Speed, _otherDroneMovement.Speed, (1 - hit.distance));
             }

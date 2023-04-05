@@ -79,7 +79,7 @@ public class DroneArmyManager : MonoBehaviour
 
     IEnumerator SpawnDrones()
     {
-        DroneMovement droneMovement = null;
+        DroneManager droneMovement = null;
         _droneId = 0;
 
         foreach(GameObject dronePrefab in _droneOrder)
@@ -88,7 +88,7 @@ public class DroneArmyManager : MonoBehaviour
             if(drone != null)
             {
                 
-                if(drone.TryGetComponent<DroneMovement>(out droneMovement))
+                if(drone.TryGetComponent<DroneManager>(out droneMovement))
                 {
                     droneMovement.DroneId = ++_droneId;
                     droneMovement.Moving = true;
@@ -107,7 +107,7 @@ public class DroneArmyManager : MonoBehaviour
 
     private void OnDroneSurvived(object sender, uint points)
     {
-        DroneMovement droneMovement = (DroneMovement)sender;
+        DroneManager droneMovement = (DroneManager)sender;
         droneMovement.DroneSurvived -= OnDroneSurvived;
         Destroy(droneMovement.gameObject);
         _score += points;
