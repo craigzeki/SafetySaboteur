@@ -19,6 +19,7 @@ public class Saboteur : MonoBehaviour, iTakesDamage
     }
 
     [SerializeField] private Transform _playerAudioListenerPoint;
+    [SerializeField] private Transform _playerFakeOrigin;
 
     private MaterializeOnSpawn _materializer;
 
@@ -28,6 +29,7 @@ public class Saboteur : MonoBehaviour, iTakesDamage
 
     public SaboteurState State { get => _state; }
     public Transform PlayerAudioListener { get => _playerAudioListenerPoint; }
+    public Transform PlayerFakeOrigin { get => _playerFakeOrigin; }
 
     public event EventHandler<SaboteurStateChangedEventArgs> StateChanged;
 
@@ -132,9 +134,14 @@ public class Saboteur : MonoBehaviour, iTakesDamage
         StateChanged?.Invoke(this, saboteurStateChangedEventArgs);
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
-        throw new NotImplementedException();
+        
+    }
+
+    public int GetHealth()
+    {
+        return 1000;
     }
 }
 

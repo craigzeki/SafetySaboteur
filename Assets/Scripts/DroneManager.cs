@@ -9,8 +9,8 @@ using System;
 public class DroneManager : MonoBehaviour, iTakesDamage
 {
     [SerializeField] private HealthBar _healthBar;
-    [SerializeField] private float _maxHealth = 100f;
-    [SerializeField] private float _startHealth = 100f;
+    [SerializeField] private int _maxHealth = 100;
+    [SerializeField] private int _startHealth = 100;
     [SerializeField] private uint _points;
     [SerializeField] private PathCreator _pathCreator;
     [SerializeField] private EndOfPathInstruction _endOfPathInstruction;
@@ -28,7 +28,7 @@ public class DroneManager : MonoBehaviour, iTakesDamage
     private float _lerpT = 0f;
     private float _hoverPositionY = 0f;
 
-    private float _currentHealth = 0f;
+    private int _currentHealth = 0;
 
     private Vector3 _newPosition = Vector3.zero;
     private float _pathY = 0f;
@@ -87,16 +87,16 @@ public class DroneManager : MonoBehaviour, iTakesDamage
         transform.position = _newPosition;
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
-        _currentHealth = Mathf.Clamp(_currentHealth - damage, 0f, _maxHealth);
+        _currentHealth = Mathf.Clamp(_currentHealth - damage, 0, _maxHealth);
         SetHealthBar();
     }
 
     private void SetHealthBar()
     {
         if (_healthBar == null) return;
-        _healthBar.SetHealthPercent(_currentHealth / _maxHealth);
+        _healthBar.SetHealthPercent((float)((float)_currentHealth / (float)_maxHealth));
     }
 
     protected virtual void OnDroneSurvived()
@@ -183,7 +183,12 @@ public class DroneManager : MonoBehaviour, iTakesDamage
 
     private void OnMouseDown()
     {
-        TakeDamage(10f);
+        TakeDamage(10);
+    }
+
+    public int GetHealth()
+    {
+        return _currentHealth;
     }
 }
 

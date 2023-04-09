@@ -127,7 +127,7 @@ MonoBehaviour:
   _maxColour: {r: 2, g: 0.7234349, b: 0, a: 1}
   _minColour: {r: 0.9411765, g: 0.03137255, b: 0, a: 1}
   _colourLerpStartPercent: 0.8
-  _colourLerpEndPercent: 0.2
+  _colourLerpEndPercent: 0.4
   _targetScale: 1
 --- !u!1 &760412747658849370
 GameObject:

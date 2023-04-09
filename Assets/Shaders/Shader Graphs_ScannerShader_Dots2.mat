@@ -72,7 +72,7 @@ Material:
     - _DotsTiling: {r: 30.79, g: 102.15, b: 0, a: 0}
     - _HexColour: {r: 0, g: 1.9763064, b: 11.796079, a: 1}
     - _HexTiling: {r: 8, g: 8, b: 0, a: 0}
-    - _NoiseSpeed: {r: 0.2, g: 0.2, b: 0, a: 0}
+    - _NoiseSpeed: {r: 0.4, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &2194127527484193520
 MonoBehaviour:

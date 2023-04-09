@@ -2,5 +2,6 @@
 
 public interface iTakesDamage
 {
-    public void TakeDamage(float damage);
+    public void TakeDamage(int damage);
+    public int GetHealth();
 }

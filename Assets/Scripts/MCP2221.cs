@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using UnityEngine;
-using static UnityEngine.Rendering.VirtualTexturing.Debugging;
+
 
 namespace ZekstersLab.MCP2221
 {
