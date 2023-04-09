@@ -29,6 +29,7 @@ public class DroneManager : MonoBehaviour, iTakesDamage
     private float _hoverPositionY = 0f;
 
     private int _currentHealth = 0;
+    private bool _isDead = false;
 
     private Vector3 _newPosition = Vector3.zero;
     private float _pathY = 0f;
@@ -177,15 +178,16 @@ public class DroneManager : MonoBehaviour, iTakesDamage
     {
         if(Mathf.Approximately(percent, 0f))
         {
+            _isDead = true;
             Destroy(this.gameObject);
         }
     }
 
-    private void OnMouseDown()
+    public bool GetIsDead()
     {
-        TakeDamage(10);
+        return _isDead;
     }
-
+    
     public int GetHealth()
     {
         return _currentHealth;

@@ -23,5 +23,6 @@ namespace RPGCharacterAnims.Lookups
 		public static readonly string Roll = "Roll";
 		public static readonly string Jump = "Jump";
         public static readonly string DoubleJump = "DoubleJump";
+        public static readonly string Death = "Death";
     }
 }

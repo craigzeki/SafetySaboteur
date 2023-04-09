@@ -13,6 +13,7 @@ public class CameraDirector : MonoBehaviour
         SpawnCam,
         RoamingCam,
         ShoulderCam,
+        DeathCam,
         //FinishGameCam,
         NumOfCams
     }
@@ -101,6 +102,11 @@ public class CameraDirector : MonoBehaviour
         if(player.TryGetComponent<Saboteur>(out _saboteur))
         {
             _saboteur.StateChanged += OnPlayerStateChanged;
+            if (cameraList[(int)CameraList.DeathCam] != null)
+            {
+                if (cameraFollowPlayer[(int)CameraList.DeathCam]) cameraList[(int)CameraList.DeathCam].Follow = _saboteur.DeathCam;
+                if (cameraLookAtPlayer[(int)CameraList.DeathCam]) cameraList[(int)CameraList.DeathCam].LookAt = _saboteur.DeathCam;
+            }
         }
         
     }
@@ -130,8 +136,10 @@ public class CameraDirector : MonoBehaviour
                 SetCamera(CameraList.ShoulderCam);
                 break;
             case Saboteur.SaboteurState.DYING:
+                SetCamera(CameraList.DeathCam);
                 break;
             case Saboteur.SaboteurState.DEAD:
+                SetCamera(CameraList.RoamingCam);
                 _saboteur.StateChanged -= OnPlayerStateChanged;
                 break;
             case Saboteur.SaboteurState.NUM_OF_STATES:

@@ -97,9 +97,10 @@ public class Tower : MonoBehaviour
                 {
                     //(_targetInfo.DamageReceiver.GetHealth() <= 0)
                     if (
-                            (!_targetInfo.TargetAquired) ||
-                            (!_targetInfo.TargetInRange) ||
-                            (!_targetInfo.TargetInView))
+                        (_targetInfo.DamageReceiver.GetIsDead()) ||
+                        (!_targetInfo.TargetAquired) ||
+                        (!_targetInfo.TargetInRange) ||
+                        (!_targetInfo.TargetInView))
                     {
                         _weapon.Stop();
                         NewState = TowerState.SCANNING;

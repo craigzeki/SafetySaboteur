@@ -441,6 +441,21 @@ namespace RPGCharacterAnims
         }
 
         /// <summary>
+        /// Added by CZ: Death in the specified direction. Currently only backwards.
+        /// Implemented using Knockdown animation without Getup
+        ///
+        /// Use the "Death" action for a friendly interface.
+        /// </summary>
+        /// <param name="direction">1- Backwards.</param>
+        public void Death(KnockdownType direction)
+        {
+            animator.TriggerDeath(direction);
+            animator.SetBool("Dead", true);
+            Lock(true, true, false, 0, 5.25f); //not timed so controls and animator will not re-enable
+            SetIKOff(); //disable hands
+        }
+
+        /// <summary>
         /// Knockdown in the specified direction. Currently only backwards.
         ///
         /// Use the "Knockdown" action for a friendly interface.

@@ -34,6 +34,6 @@ namespace RPGCharacterAnims.Lookups
         KnockbackTrigger = 26,
         KnockdownTrigger = 27,
         DiveRollTrigger = 28,
-        CrawlTrigger = 29
+        CrawlTrigger = 29,
     }
 }

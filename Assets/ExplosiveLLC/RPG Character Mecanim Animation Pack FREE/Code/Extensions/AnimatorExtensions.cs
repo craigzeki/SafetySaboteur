@@ -84,6 +84,17 @@ namespace RPGCharacterAnims.Extensions
         { animator.SetActionTrigger(AnimatorTrigger.KnockdownTrigger, (int)knockdownType); }
 
         /// <summary>
+        /// Sets the animator to trigger death.
+        /// </summary>
+        /// <remarks>
+        /// This builds upon the existing SetAnimationTrigger helper and allows you to provide contextual action information.
+        /// </remarks>
+        /// <param name="animator">The animator to act on.</param>
+        /// <param name="knockdownType">The enum value to set.</param>
+        public static void TriggerDeath(this Animator animator, KnockdownType knockdownType)
+        { animator.SetActionTrigger(AnimatorTrigger.DeathTrigger, (int)knockdownType); }
+
+        /// <summary>
         /// Sets the animator to trigger getting hit.
         /// </summary>
         /// <remarks>
