@@ -12,6 +12,8 @@ public class HealthBar : MonoBehaviour
     [SerializeField] Color _minColour;
     [SerializeField] float _colourLerpStartPercent = 0.8f;
     [SerializeField] float _colourLerpEndPercent = 0.2f;
+    [SerializeField] bool _alwaysRotateToFaceCam = true;
+    [SerializeField] private GameObject _healthObject;
     private float _maxScale = 1;
     [SerializeField] private float _targetScale = 1f;
     private Vector3 _newScale = Vector3.one;
@@ -19,12 +21,16 @@ public class HealthBar : MonoBehaviour
     private float _currentPercentage = 1f;
     private Color _newColor;
     private Material _material;
+    private bool _lerp = true;
+    
+
+    public GameObject HealthObject { get => _healthObject; }
 
     public event EventHandler<float> OnTargetHealthReached;
 
     private void Awake()
     {
-        
+        if(_healthObject == null) _healthObject = this.gameObject;
         _newScale = transform.localScale;
         _targetScale = _maxScale = transform.localScale.x;
         if(_colourLerpStartPercent <= _colourLerpEndPercent)
@@ -32,24 +38,43 @@ public class HealthBar : MonoBehaviour
             _colourLerpEndPercent = 0f;
             _colourLerpStartPercent = 1f;
         }
-        if(_image != null)
+        if (_image != null)
         {
-            _material = _image.material;
+            //_material = _image.material;
+            _material = new Material(_image.material);
+            _image.material = _material;
         }
-        
+
+    }
+
+    private void Start()
+    {
+
+
     }
 
     void Update()
     {
-        transform.LookAt(Camera.main.transform);
-        _newScale.x = Mathf.SmoothDamp(transform.localScale.x, _targetScale, ref _smoothVelocity, _smoothTime);
+        if(_alwaysRotateToFaceCam)
+        {
+            transform.LookAt(Camera.main.transform);
+        }
+        
+        if(_lerp)
+        {
+            _newScale.x = Mathf.SmoothDamp(transform.localScale.x, _targetScale, ref _smoothVelocity, _smoothTime);
+        }
+        else
+        {
+            _newScale.x = _targetScale;
+        }
         
         if(_newScale.x - _targetScale <= _targetTolerance)
         {
             _newScale.x = _targetScale;
             TargetHealthPercentReached(_targetScale);
         }
-        transform.localScale = _newScale;
+        _healthObject.transform.localScale = _newScale;
         _currentPercentage = _newScale.x / _maxScale;
         if((_currentPercentage < _colourLerpStartPercent) && (_currentPercentage > _colourLerpEndPercent))
         {
@@ -67,9 +92,10 @@ public class HealthBar : MonoBehaviour
         
     }
 
-    public void SetHealthPercent(float percent)
+    public void SetHealthPercent(float percent, bool lerp = true)
     {
         _targetScale = Mathf.Clamp(percent, 0f, 1f) * _maxScale;
+        _lerp = lerp;
     }
 
     protected virtual void TargetHealthPercentReached(float healthPercent)

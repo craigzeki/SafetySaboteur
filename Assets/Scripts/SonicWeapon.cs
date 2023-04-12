@@ -76,6 +76,11 @@ public class SonicWeapon : MonoBehaviour, iTowerWeapon
     // Update is called once per frame
     void Update()
     {
+
+        _vfxStartPos.transform.position = _origin.position;
+        _vfxStartPos.transform.rotation = Quaternion.LookRotation(transform.InverseTransformDirection(_origin.forward), transform.InverseTransformDirection(_origin.up));
+
+
         _currentButtonState = ZekiController.Instance.GetButtonState(ZekiController.BUTTON.BUTTON_3);
         
 

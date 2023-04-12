@@ -33,11 +33,11 @@ RectTransform:
   m_Father: {fileID: 760412747658849371}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 1.5, y: 0.1}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &760412745630982535
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 760412747136208433}
   - component: {fileID: 760412747136208432}
   m_Layer: 0
-  m_Name: HealthBar
+  m_Name: HealthBar_World
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -128,6 +128,7 @@ MonoBehaviour:
   _minColour: {r: 0.9411765, g: 0.03137255, b: 0, a: 1}
   _colourLerpStartPercent: 0.8
   _colourLerpEndPercent: 0.4
+  _alwaysRotateToFaceCam: 1
   _targetScale: 1
 --- !u!1 &760412747658849370
 GameObject:

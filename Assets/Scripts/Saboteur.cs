@@ -28,6 +28,7 @@ public class Saboteur : MonoBehaviour, iTakesDamage
     [SerializeField] private int _maxHealth = 100;
     [SerializeField] private int _startHealth = 100;
     [SerializeField] private Transform _deathCam;
+    [SerializeField] private float _deathCamTime = 4f;
 
     private MaterializeOnSpawn _materializer;
 
@@ -87,7 +88,7 @@ public class Saboteur : MonoBehaviour, iTakesDamage
             case SaboteurState.DYING:
                 if(_rPGCharacterController.animator.GetCurrentAnimatorStateInfo(0).IsName("Dead"))
                 {
-                    StartCoroutine(DeathCamTimer(40f));
+                    StartCoroutine(DeathCamTimer(_deathCamTime));
                 }
                 break;
             case SaboteurState.DEAD:
