@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class HealthBar : MonoBehaviour
+public class SkillBar : MonoBehaviour
 {
     [SerializeField] private UnityEngine.UI.Image _image;
     [SerializeField] float _smoothTime = 0.3f;
@@ -13,27 +13,29 @@ public class HealthBar : MonoBehaviour
     [SerializeField] float _colourLerpStartPercent = 0.8f;
     [SerializeField] float _colourLerpEndPercent = 0.2f;
     [SerializeField] bool _alwaysRotateToFaceCam = true;
-    [SerializeField] private GameObject _healthObject;
+    [SerializeField] private GameObject _skillObject;
     private float _maxScale = 1;
     [SerializeField] private float _targetScale = 1f;
+    [SerializeField] private bool _enabledAtStart = false;
+    [SerializeField] Canvas _canvas;
     private Vector3 _newScale = Vector3.one;
     private float _smoothVelocity = 0f;
     private float _currentPercentage = 1f;
     private Color _newColor;
     private Material _material;
     private bool _lerp = true;
-    
 
-    public GameObject HealthObject { get => _healthObject; }
 
-    public event EventHandler<float> OnTargetHealthReached;
+    public GameObject SkillObject { get => _skillObject; }
+
+    public event EventHandler<float> OnTargetSkillReached;
 
     private void Awake()
     {
-        if(_healthObject == null) _healthObject = this.gameObject;
+        if (_skillObject == null) _skillObject = this.gameObject;
         _newScale = transform.localScale;
         _targetScale = _maxScale = transform.localScale.x;
-        if(_colourLerpStartPercent <= _colourLerpEndPercent)
+        if (_colourLerpStartPercent <= _colourLerpEndPercent)
         {
             _colourLerpEndPercent = 0f;
             _colourLerpStartPercent = 1f;
@@ -45,66 +47,69 @@ public class HealthBar : MonoBehaviour
             _image.material = _material;
         }
 
+        SetEnabled(_enabledAtStart);
     }
 
-    private void Start()
+   
+
+    public void SetEnabled(bool enabled)
     {
-
-
+        if (_canvas != null) _canvas.enabled = enabled;
+        
     }
 
     void Update()
     {
-        if(_alwaysRotateToFaceCam)
+        if (_alwaysRotateToFaceCam)
         {
             transform.LookAt(Camera.main.transform);
         }
-        
-        if(_lerp)
+
+        if (_lerp)
         {
-            _newScale.x = Mathf.SmoothDamp(_healthObject.transform.localScale.x, _targetScale, ref _smoothVelocity, _smoothTime);
+            _newScale.x = Mathf.SmoothDamp(_skillObject.transform.localScale.x, _targetScale, ref _smoothVelocity, _smoothTime);
         }
         else
         {
             _newScale.x = _targetScale;
         }
-        
-        if(Mathf.Abs(_newScale.x - _targetScale) <= _targetTolerance)
+
+        if (Mathf.Abs(_newScale.x - _targetScale) <= _targetTolerance)
         {
             _newScale.x = _targetScale;
-            TargetHealthPercentReached(_targetScale);
+            TargetSkillPercentReached(_targetScale);
         }
-        _healthObject.transform.localScale = _newScale;
+        _skillObject.transform.localScale = _newScale;
         _currentPercentage = _newScale.x / _maxScale;
-        if((_currentPercentage < _colourLerpStartPercent) && (_currentPercentage > _colourLerpEndPercent))
+        if ((_currentPercentage < _colourLerpStartPercent) && (_currentPercentage > _colourLerpEndPercent))
         {
             _newColor = Color.Lerp(_minColour, _maxColour, ((_currentPercentage - _colourLerpEndPercent) / (_colourLerpStartPercent - _colourLerpEndPercent)));
         }
-        else if(_currentPercentage <= _colourLerpEndPercent)
+        else if (_currentPercentage <= _colourLerpEndPercent)
         {
             _newColor = _minColour;
         }
-        else if(_currentPercentage > _colourLerpStartPercent)
+        else if (_currentPercentage > _colourLerpStartPercent)
         {
             _newColor = _maxColour;
         }
         _material.SetColor("_EmissionColor", _newColor);
-        
+
     }
 
-    public void SetHealthPercent(float percent, bool lerp = true)
+    public void SetSkillPercent(float percent, bool lerp = true)
     {
         _targetScale = Mathf.Clamp(percent, 0f, 1f) * _maxScale;
         _lerp = lerp;
-        if(!lerp)
+        if (!lerp)
         {
             _newScale.x = _targetScale;
-            _healthObject.transform.localScale = _newScale;
+            _skillObject.transform.localScale = _newScale;
         }
     }
 
-    protected virtual void TargetHealthPercentReached(float healthPercent)
+    protected virtual void TargetSkillPercentReached(float skillPercent)
     {
-        OnTargetHealthReached?.Invoke(this, healthPercent);
+        OnTargetSkillReached?.Invoke(this, skillPercent);
     }
 }

@@ -12,11 +12,11 @@ public class GUISkill : MonoBehaviour
     [SerializeField] private Color _disabledColor;
     [SerializeField] private bool _enabledAtStart = false;
 
-    private HealthBar _healthBar ;
+    public HealthBar HealthBar ;
 
     private void Awake()
     {
-        _healthBar = GetComponent<HealthBar>();
+        HealthBar = GetComponent<HealthBar>();
     }
 
     void Start()
@@ -27,8 +27,8 @@ public class GUISkill : MonoBehaviour
     public void SetEnabled(bool enabled)
     {
         
-        _healthBar.SetHealthPercent(_startPercentage, false);
-        _healthBar.HealthObject.SetActive(enabled);
+        HealthBar.SetHealthPercent(_startPercentage, false);
+        HealthBar.HealthObject.SetActive(enabled);
         if(_image != null) _image.color = enabled ? _enabledColor : _disabledColor;
 
     }

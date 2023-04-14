@@ -23,6 +23,8 @@ public class ZekiController : MonoBehaviour
         NUM_OF_STATES
     }
 
+    [SerializeField] private BUTTON_STATE[] _buttonValues = new BUTTON_STATE[(int)BUTTON.NUM_OF_BUTTONS];
+
     private Dictionary<BUTTON, MCP2221_Wrapper.Pins> _buttonMap = new Dictionary<BUTTON, MCP2221_Wrapper.Pins>();
 
     private static ZekiController instance;
@@ -39,17 +41,31 @@ public class ZekiController : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+
+        for (int i = 0; i < (int)BUTTON.NUM_OF_BUTTONS; i++)
+        {
+            _buttonValues[i] = BUTTON_STATE.UNKNOWN;
+        }
+
         _buttonMap.Add(BUTTON.BUTTON_0, MCP2221_Wrapper.Pins.PIN_0);
         _buttonMap.Add(BUTTON.BUTTON_1, MCP2221_Wrapper.Pins.PIN_1);
         _buttonMap.Add(BUTTON.BUTTON_2, MCP2221_Wrapper.Pins.PIN_2);
         _buttonMap.Add(BUTTON.BUTTON_3, MCP2221_Wrapper.Pins.PIN_3);
         _mcpWrapper = new MCP2221_Wrapper();
+        
     }
 
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-        _mcpWrapper.DoUpdate();
+        TestLED();
+    }
+
+    private void Update()
+    {
+        for(int i = 0; i < (int)BUTTON.NUM_OF_BUTTONS; i++)
+        {
+            _buttonValues[i] = GetButtonState((BUTTON)i);
+        }
     }
 
     public BUTTON_STATE GetButtonState(BUTTON button)
@@ -78,12 +94,12 @@ public class ZekiController : MonoBehaviour
     IEnumerator LEDGlow()
     {
         float percent = 0f;
-
-        while(true)
+        
+        while (true)
         {
             while ((percent <= 25) && (_mcpWrapper != null))
             {
-
+                _mcpWrapper.DoUpdate();
                 _mcpWrapper.SetLEDBrightness(MCP2221_Wrapper.LED.LED_0, percent);
                 _mcpWrapper.SetLEDBrightness(MCP2221_Wrapper.LED.LED_1, percent);
                 _mcpWrapper.SetLEDBrightness(MCP2221_Wrapper.LED.LED_2, percent);
@@ -95,7 +111,7 @@ public class ZekiController : MonoBehaviour
 
             while ((percent > 0) && (_mcpWrapper != null))
             {
-
+                _mcpWrapper.DoUpdate();
                 _mcpWrapper.SetLEDBrightness(MCP2221_Wrapper.LED.LED_0, percent);
                 _mcpWrapper.SetLEDBrightness(MCP2221_Wrapper.LED.LED_1, percent);
                 _mcpWrapper.SetLEDBrightness(MCP2221_Wrapper.LED.LED_2, percent);

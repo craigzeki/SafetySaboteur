@@ -6,7 +6,8 @@ using System.Text;
 using System;
 using Microsoft.Win32.SafeHandles;
 using System.Runtime.ConstrainedExecution;
-
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace ZekstersLab.MCP2221
 {
@@ -197,30 +198,56 @@ namespace ZekstersLab.MCP2221
         private byte[] _readData = new byte[2];
         private byte[] _writeData = new byte[2];
 
+        private Task _openingTask;
+        CancellationTokenSource _tokenSource = new CancellationTokenSource();
+        CancellationToken _ct;
+        private bool _setupComplete = false;
 
         public MCP2221_Wrapper()
         {
+            _ct = _tokenSource.Token;
+            _openingTask = Task.Run(async () => { await StartDevice(); }, _tokenSource.Token);
+            Debug.Log("[Mcp2221] Constructor Complete");
+        }
+
+        private async Task StartDevice()
+        {
+            _ct.ThrowIfCancellationRequested();
 
             StringBuilder str = new StringBuilder(255);
+            bool firstRun = true;
+            bool error = false;
+
+            _setupComplete = false;
 
             if (CheckResultForError(MCP2221.Mcp2221_GetLibraryVersion(str), "Mcp2221_GetLibraryVersion")) return;
             Debug.Log("[Mcp2221] Version: " + str);
 
-            if (CheckResultForError(MCP2221.Mcp2221_GetConnectedDevices(DEFAULT_VID, DEFAULT_PID, ref _numOfDevices), "Mcp2221_GetConnectedDevices")) return;
-            Debug.Log("[Mcp2221] Number of connected devices: " + _numOfDevices.ToString());
+            //if (CheckResultForError(MCP2221.Mcp2221_GetConnectedDevices(DEFAULT_VID, DEFAULT_PID, ref _numOfDevices), "Mcp2221_GetConnectedDevices")) return;
+            //Debug.Log("[Mcp2221] Number of connected devices: " + _numOfDevices.ToString());
 
-            _uVPHandle = MCP2221.Mcp2221_OpenByIndex(DEFAULT_VID, DEFAULT_PID, 0);
-            if (CheckResultForError(MCP2221.Mcp2221_GetLastError(), "Mcp2221_OpenByIndex"))
+            //_uVPHandle = MCP2221.Mcp2221_OpenByIndex(DEFAULT_VID, DEFAULT_PID, 0);
+            do
             {
-                //close connections and retry
-                Debug.Log("[Mcp2221] Failed opening by Index - attempting retry - closing all handles");
-                if (CheckResultForError(MCP2221.Mcp2221_CloseAll(), "Mcp2221_CloseAll")) return;
-                Debug.Log("[Mcp2221] Closed all handles");
-                if (CheckResultForError(MCP2221.Mcp2221_GetConnectedDevices(DEFAULT_VID, DEFAULT_PID, ref _numOfDevices), "Mcp2221_GetConnectedDevices")) return;
+                error = false;
+                if (!firstRun)
+                {
+                    //close connections and retry
+                    Debug.Log("[Mcp2221] Failed opening by Index - attempting retry - closing all handles");
+                    if (CheckResultForError(MCP2221.Mcp2221_CloseAll(), "Mcp2221_CloseAll")) return;
+                    Debug.Log("[Mcp2221] Closed all handles - waiting 1s");
+                    await Task.Delay(1000);
+                    Debug.Log("[Mcp2221] Resuming");
+                }
+                firstRun = false;
+
+                //check cancellation
+                if (_ct.IsCancellationRequested) _ct.ThrowIfCancellationRequested();
+
+                if (CheckResultForError(MCP2221.Mcp2221_GetConnectedDevices(DEFAULT_VID, DEFAULT_PID, ref _numOfDevices), "Mcp2221_GetConnectedDevices")) { error = true; continue; }
                 Debug.Log("[Mcp2221] Number of connected devices: " + _numOfDevices.ToString());
                 _uVPHandle = MCP2221.Mcp2221_OpenByIndex(DEFAULT_VID, DEFAULT_PID, 0);
-                if (CheckResultForError(MCP2221.Mcp2221_GetLastError(), "Mcp2221_OpenByIndex")) return;
-            }
+            } while (CheckResultForError(MCP2221.Mcp2221_GetLastError(), "Mcp2221_OpenByIndex") || error);
 
 
             Debug.Log("[Mcp2221] Device handle: " + _uVPHandle.ToString());
@@ -276,12 +303,14 @@ namespace ZekstersLab.MCP2221
             //Debug.Log("[Mcp2221] Closed handle: " + _uVPHandle.ToString());
 
             SetupI2C();
+            _setupComplete = true;
         }
 
         private void SetupI2C()
         {
             if (_uVPHandle == null) return;
             if (_uVPHandle.IsInvalid) return;
+            
 
             _AW9523_ID = 0;
 
@@ -297,9 +326,9 @@ namespace ZekstersLab.MCP2221
             _AW9523_ID = _readData[0];
             Debug.Log("AW9523 ID: " + _AW9523_ID.ToString("X"));
 
-            if (!I2C_Send(GPIO_AW9523_P0_CONFIG_ADDRESS, GPIO_AW9523_P0_CONFIG_OUTPUTS, "P0 Config")) return;
-            if (!I2C_Send(GPIO_AW9523_GLOBAL_CTRL_ADDRESS, GPIO_AW9523_GLOBAL_CTRL_SETTING, "Global Control")) return;
-            if (!I2C_Send(GPIO_AW9523_P0_MODE_ADDRESS, GPIO_AW9523_P0_MODE, "P0 LED Mode")) return;
+            if (!I2C_Send(GPIO_AW9523_P0_CONFIG_ADDRESS, GPIO_AW9523_P0_CONFIG_OUTPUTS, "P0 Config", true)) return;
+            if (!I2C_Send(GPIO_AW9523_GLOBAL_CTRL_ADDRESS, GPIO_AW9523_GLOBAL_CTRL_SETTING, "Global Control", true)) return;
+            if (!I2C_Send(GPIO_AW9523_P0_MODE_ADDRESS, GPIO_AW9523_P0_MODE, "P0 LED Mode", true)) return;
 
             for (LED i = LED.LED_0; i < LED.NUM_OF_LEDS; i++)
             {
@@ -308,10 +337,11 @@ namespace ZekstersLab.MCP2221
 
         }
 
-        private bool I2C_Send(byte registerAddress, byte data, string registerName)
+        private bool I2C_Send(byte registerAddress, byte data, string registerName, bool overrideSetup = false)
         {
             if (_uVPHandle == null) return false;
             if (_uVPHandle.IsInvalid) return false;
+            if (!_setupComplete && !overrideSetup) return false;
 
             _writeData[0] = registerAddress;
             _writeData[1] = data;
@@ -321,50 +351,57 @@ namespace ZekstersLab.MCP2221
             return true;
         }
 
-        public bool SetLEDBrightness(LED led, float percent)
+        public bool SetLEDBrightness(LED led, float percent, bool overrideSetup = false)
         {
             if (_uVPHandle == null) return false;
             if (_uVPHandle.IsInvalid) return false;
+            if (!_setupComplete && !overrideSetup) return false;
 
             //convert percentage to byte 0 - 255
             percent = Mathf.Clamp(percent, 0, 100);
             byte data = (byte)(Mathf.CeilToInt(percent * GPIO_AW9523_LED_ONE_PERCENT));
             Debug.Log("Setting LED " + ((byte)led).ToString() + " to " + percent + "%");
-            return I2C_Send((byte)(GPIO_AW9523_P0_0_LED_ADDRESS + ((byte)led)), data, "LED P0_" + ((byte)led).ToString());
+            return I2C_Send((byte)(GPIO_AW9523_P0_0_LED_ADDRESS + ((byte)led)), data, "LED P0_" + ((byte)led).ToString(), overrideSetup);
         }
 
         public void Destroy()
         {
-            if(_uVPHandle == null) return;
-            if(_uVPHandle.IsInvalid) return;
-
             Debug.Log("Start of MCP2221_Wrapper OnDestroy");
-            for (int i = 0; i < _pinFunctions.Length; i++)
+            if (_uVPHandle != null)
             {
-                if ((_pinFunctions[i] == MCP2221_GPFUNC_IO) && (_pinDirections[i] == MCP2221_GPDIR_OUTPUT))
+                if (!_uVPHandle.IsInvalid)
                 {
-                    _pinValues[i] = MCP2221_GPVAL_LOW;
+                    
+                    for (int i = 0; i < _pinFunctions.Length; i++)
+                    {
+                        if ((_pinFunctions[i] == MCP2221_GPFUNC_IO) && (_pinDirections[i] == MCP2221_GPDIR_OUTPUT))
+                        {
+                            _pinValues[i] = MCP2221_GPVAL_LOW;
+                        }
+                        else
+                        {
+                            _pinValues[i] = NO_CHANGE;
+                        }
+                    }
+
+                    CheckResultForError(MCP2221.Mcp2221_SetGpioValues(_uVPHandle, _pinValues), "Mcp2221_SetGpioValues");
+
+                    for (LED i = LED.LED_0; i < LED.NUM_OF_LEDS; i++)
+                    {
+                        SetLEDBrightness(i, 0f);
+                    }
                 }
-                else
-                {
-                    _pinValues[i] = NO_CHANGE;
-                }
+
+                
+
+                
+                //No longer required due to use of MCP2221SafeHandle class
+                //Debug.Log("MCP2221_Wrapper OnDestroy: About to Marshal.FreeHGlobal(_uVPHandle)");
+                //Marshal.FreeHGlobal(_uVPHandle);
+                //Debug.Log("MCP2221_Wrapper OnDestroy: Completed Marshal.FreeHGlobal(_uVPHandle)");
             }
-
-            CheckResultForError(MCP2221.Mcp2221_SetGpioValues(_uVPHandle, _pinValues), "Mcp2221_SetGpioValues");
-
-            for (LED i = LED.LED_0; i < LED.NUM_OF_LEDS; i++)
-            {
-                SetLEDBrightness(i, 0f);
-            }
-
             Dispose();
-
-            Debug.Log("[Mcp2221] Closed All");
-            //No longer required due to use of MCP2221SafeHandle class
-            //Debug.Log("MCP2221_Wrapper OnDestroy: About to Marshal.FreeHGlobal(_uVPHandle)");
-            //Marshal.FreeHGlobal(_uVPHandle);
-            //Debug.Log("MCP2221_Wrapper OnDestroy: Completed Marshal.FreeHGlobal(_uVPHandle)");
+            Debug.Log("[Mcp2221] Shutdown");
         }
 
         private bool CheckResultForError(int result, string funcName)
@@ -391,7 +428,7 @@ namespace ZekstersLab.MCP2221
 
             if (_uVPHandle.IsInvalid)
             {
-                Debug.Log("UuVPHandle is disposed - connection to MCP2221 closed");
+                if (_setupComplete) Debug.Log("UuVPHandle is invalid");
                 return;
             }
             if (CheckResultForError(MCP2221.Mcp2221_GetGpioValues(_uVPHandle, _pinValues), "Mcp2221_GetGpioValues")) return;
@@ -419,9 +456,11 @@ namespace ZekstersLab.MCP2221
             if (_uVPHandle == null) return false;
             if (_uVPHandle.IsInvalid)
             {
-                Debug.Log("UuVPHandle is disposed - connection to MCP2221 closed");
+                if (!_setupComplete) Debug.Log("UuVPHandle is disposed - connection to MCP2221 closed");
                 return false;
             }
+            if (!_setupComplete) return false;
+
             bool result;
             if (_pinDirections[(int)pin] == MCP2221_GPDIR_OUTPUT)
             {
@@ -447,13 +486,27 @@ namespace ZekstersLab.MCP2221
             return result;
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected virtual async void Dispose(bool disposing)
         {
             Debug.Log("MCP2221_Wrapper: Dispose called with disposing = " + disposing.ToString());
             if (!disposedValue)
             {
                 if (disposing)
                 {
+                    _tokenSource.Cancel();
+                    try
+                    {
+                        await _openingTask;
+                    }
+                    catch (OperationCanceledException e)
+                    {
+                        Debug.Log(nameof(OperationCanceledException) + " thrown with message: " + e.Message);
+                    }
+                    finally
+                    {
+                        _tokenSource.Dispose();
+                    }
+
                     if (_uVPHandle != null && !_uVPHandle.IsInvalid)
                     {
                         Debug.Log("MCP2221_Wrapper.Dispose: about to call _uVPHandle.Dispose() with _uVPHandle = " + _uVPHandle.ToString());

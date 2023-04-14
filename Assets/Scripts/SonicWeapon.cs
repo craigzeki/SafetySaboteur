@@ -78,23 +78,23 @@ public class SonicWeapon : MonoBehaviour, iTowerWeapon
     {
 
         _vfxStartPos.transform.position = _origin.position;
-        _vfxStartPos.transform.rotation = Quaternion.LookRotation(transform.InverseTransformDirection(_origin.forward), transform.InverseTransformDirection(_origin.up));
+        _vfxStartPos.transform.rotation = Quaternion.LookRotation(_vfxStartPos.transform.InverseTransformDirection(_origin.forward), _vfxStartPos.transform.InverseTransformDirection(_origin.up));
 
 
-        _currentButtonState = ZekiController.Instance.GetButtonState(ZekiController.BUTTON.BUTTON_3);
+        //_currentButtonState = ZekiController.Instance.GetButtonState(ZekiController.BUTTON.BUTTON_3);
         
 
-        if(!_switchFirstFrame)
-        {
-            if (((_previousButtonState == ZekiController.BUTTON_STATE.UNKNOWN) || (_previousButtonState == ZekiController.BUTTON_STATE.ON)) && (_currentButtonState == ZekiController.BUTTON_STATE.OFF)) _switchStopFireTriggered = true;
-            if (((_previousButtonState == ZekiController.BUTTON_STATE.UNKNOWN) || (_previousButtonState == ZekiController.BUTTON_STATE.OFF)) && (_currentButtonState == ZekiController.BUTTON_STATE.ON)) _switchFireTriggered = true;
-        }
-        else
-        {
-            _switchFirstFrame = false;
-        }
+        //if(!_switchFirstFrame)
+        //{
+        //    if (((_previousButtonState == ZekiController.BUTTON_STATE.UNKNOWN) || (_previousButtonState == ZekiController.BUTTON_STATE.ON)) && (_currentButtonState == ZekiController.BUTTON_STATE.OFF)) _switchStopFireTriggered = true;
+        //    if (((_previousButtonState == ZekiController.BUTTON_STATE.UNKNOWN) || (_previousButtonState == ZekiController.BUTTON_STATE.OFF)) && (_currentButtonState == ZekiController.BUTTON_STATE.ON)) _switchFireTriggered = true;
+        //}
+        //else
+        //{
+        //    _switchFirstFrame = false;
+        //}
        
-        _previousButtonState = _currentButtonState;
+        //_previousButtonState = _currentButtonState;
 
         if (Input.GetKeyUp(KeyCode.F) || _switchFireTriggered)
         {
