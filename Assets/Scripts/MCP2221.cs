@@ -67,6 +67,27 @@ namespace ZekstersLab.MCP2221
 #else
         [DllImport("mcp2221_dll_um.dll", SetLastError = true)]
 #endif
+        internal extern static MCP2221SafeHandle Mcp2221_OpenBySN(uint vid, uint pid, StringBuilder serialNo);
+        //internal extern static MCP2221SafeHandle Mcp2221_OpenBySN(uint vid, uint pid, char[] serialNo);
+#if UNITY_IPHONE
+    [DllImport("__Internal", SetLastError = true)]
+#else
+        [DllImport("mcp2221_dll_um.dll", SetLastError = true)]
+#endif
+        internal extern static int Mcp2221_GetSerialNumberDescriptor(MCP2221SafeHandle handle, StringBuilder serialNumber);
+        //internal extern static int Mcp2221_GetSerialNumberDescriptor(MCP2221SafeHandle handle, char[] serialNumber);
+#if UNITY_IPHONE
+    [DllImport("__Internal", SetLastError = true)]
+#else
+        [DllImport("mcp2221_dll_um.dll", SetLastError = true)]
+#endif
+        internal extern static int Mcp2221_GetFactorySerialNumber(MCP2221SafeHandle handle, StringBuilder serialNumber);
+        //internal extern static int Mcp2221_GetFactorySerialNumber(MCP2221SafeHandle handle, char[] serialNumber);
+#if UNITY_IPHONE
+    [DllImport("__Internal", SetLastError = true)]
+#else
+        [DllImport("mcp2221_dll_um.dll", SetLastError = true)]
+#endif
         internal extern static int Mcp2221_GetLastError();
 #if UNITY_IPHONE
     [DllImport("__Internal", SetLastError = true)]

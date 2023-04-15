@@ -23,6 +23,9 @@ public class DroneManager : MonoBehaviour, iTakesDamage
     [SerializeField] private bool _moving = false;
     [SerializeField] private uint _droneID;
     [SerializeField] private float _survivedDistanceThreshold = 0.1f;
+
+    [SerializeField] private AudioSource _explosionAudio;
+
     private Coroutine _lerpCoroutine;
     private float _lerpTimeElapsed = 0f;
     private float _lerpT = 0f;
@@ -35,6 +38,7 @@ public class DroneManager : MonoBehaviour, iTakesDamage
     private float _pathY = 0f;
 
     private DroneManager _otherDroneManager;
+    private Coroutine _explosionCoroutine;
 
     public bool Moving { get => _moving; set => _moving = value; }
     public uint DroneId { get => _droneID; set => _droneID = value; }
@@ -179,8 +183,29 @@ public class DroneManager : MonoBehaviour, iTakesDamage
         if(Mathf.Approximately(percent, 0f))
         {
             _isDead = true;
-            Destroy(this.gameObject);
+            
+            if(_explosionCoroutine == null) _explosionCoroutine = StartCoroutine(Explode());
         }
+    }
+
+    IEnumerator Explode()
+    {
+        if (_explosionAudio != null)
+        {
+            _explosionAudio.Play();
+            //do explosion
+            while (_explosionAudio.isPlaying)
+            {
+                yield return null;
+            }
+        }
+        else
+        {
+            yield return null;
+        }
+        
+
+        Destroy(this.gameObject);
     }
 
     public bool GetIsDead()

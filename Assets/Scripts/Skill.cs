@@ -22,6 +22,7 @@ public class Skill : MonoBehaviour
         NUM_OF_STATES
     }
 
+    [SerializeField] private ZekiController.BUTTON _controllerButton = ZekiController.BUTTON.BUTTON_0;
     [SerializeField] private SkillState _state = SkillState.DISABLED;
     [SerializeField] private float _chargeTime = 5f;
     [SerializeField] private SkillType _skillType = SkillType.PRECISION;
@@ -34,6 +35,7 @@ public class Skill : MonoBehaviour
     private Coroutine _chargingCoroutine;
 
     public SkillState State { get => _state; }
+    public ZekiController.BUTTON ControllerButton { get => _controllerButton;  }
 
     private bool initComplete = false;
 
@@ -55,15 +57,19 @@ public class Skill : MonoBehaviour
     {
         if (!initComplete) return;
 
+        if (newState == _state) return;
+
         switch (newState)
         {
             case SkillState.DISABLED:
+                ZekiController.Instance?.SetButtonLEDState(_controllerButton, ZekiController.BUTTON_LED_STATE.LED_OFF);
                 break;
             case SkillState.CHARGING:
                 if (_state == SkillState.DISABLED)
                 {
                     _guiSkill.SetEnabled(true);
                 }
+                ZekiController.Instance?.SetButtonLEDState(_controllerButton, ZekiController.BUTTON_LED_STATE.LED_GLOW);
                 _guiSkill.HealthBar.SetHealthPercent(0f, false);
                 if (_chargingCoroutine != null) StopCoroutine(_chargingCoroutine);
                 _chargingCoroutine = StartCoroutine(DoCharging(_chargeTime));
@@ -75,7 +81,7 @@ public class Skill : MonoBehaviour
                     _guiSkill.SetEnabled(true);
                     _guiSkill.HealthBar.SetHealthPercent(1f, false);
                 }
-                
+                ZekiController.Instance?.SetButtonLEDState(_controllerButton, ZekiController.BUTTON_LED_STATE.LED_ON);
                 _state = newState;
                 
                 
@@ -89,7 +95,7 @@ public class Skill : MonoBehaviour
 
     public void UseSkill()
     {
-        DoTransition(SkillState.CHARGING);
+        if(_state == SkillState.READY) DoTransition(SkillState.CHARGING);
     }
 
     public void SkillLearnt()

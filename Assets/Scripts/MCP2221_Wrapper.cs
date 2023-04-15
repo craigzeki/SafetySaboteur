@@ -203,11 +203,18 @@ namespace ZekstersLab.MCP2221
         CancellationToken _ct;
         private bool _setupComplete = false;
 
+        private StringBuilder readSerialNumber = new StringBuilder(30);
+        //private Char[] snChars = new char[30];
+        
+
+        public bool SetupComplete { get => _setupComplete; }
+
         public MCP2221_Wrapper()
         {
             _ct = _tokenSource.Token;
             _openingTask = Task.Run(async () => { await StartDevice(); }, _tokenSource.Token);
             Debug.Log("[Mcp2221] Constructor Complete");
+            Debug.Log("StringBuilder length: " + readSerialNumber.Length);
         }
 
         private async Task StartDevice()
@@ -217,6 +224,8 @@ namespace ZekstersLab.MCP2221
             StringBuilder str = new StringBuilder(255);
             bool firstRun = true;
             bool error = false;
+            bool toggle = false;
+            string sn;
 
             _setupComplete = false;
 
@@ -246,11 +255,36 @@ namespace ZekstersLab.MCP2221
 
                 if (CheckResultForError(MCP2221.Mcp2221_GetConnectedDevices(DEFAULT_VID, DEFAULT_PID, ref _numOfDevices), "Mcp2221_GetConnectedDevices")) { error = true; continue; }
                 Debug.Log("[Mcp2221] Number of connected devices: " + _numOfDevices.ToString());
-                _uVPHandle = MCP2221.Mcp2221_OpenByIndex(DEFAULT_VID, DEFAULT_PID, 0);
+                await Task.Delay(200);
+                //readSerialNumber = new StringBuilder("0");
+                if(!toggle || (readSerialNumber.Length == 0))
+                {
+                    Debug.Log("Trying Open By Index");
+                    _uVPHandle = MCP2221.Mcp2221_OpenByIndex(DEFAULT_VID, DEFAULT_PID, 0);
+                }
+                else
+                {
+                    //sn = new string(snChars);
+                    Debug.Log("Trying Open By SN: " + readSerialNumber.ToString());
+                    _uVPHandle = MCP2221.Mcp2221_OpenBySN(DEFAULT_VID, DEFAULT_PID, readSerialNumber);
+                }
+                toggle = !toggle;
+                
             } while (CheckResultForError(MCP2221.Mcp2221_GetLastError(), "Mcp2221_OpenByIndex") || error);
 
 
-            Debug.Log("[Mcp2221] Device handle: " + _uVPHandle.ToString());
+            Debug.Log("[Mcp2221] Device handle: " + _uVPHandle.DangerousGetHandle().ToString());
+            await Task.Delay(200);
+            if (CheckResultForError(MCP2221.Mcp2221_GetFactorySerialNumber(_uVPHandle, readSerialNumber), "Mcp2221_GetFactorySerialNumber")) return;
+            //sn = new string(snChars);
+            Debug.Log("[Mcp2221] Factory Serial Number: " + readSerialNumber.ToString());
+
+            readSerialNumber = new StringBuilder(30);
+
+            await Task.Delay(200);
+            if (CheckResultForError(MCP2221.Mcp2221_GetSerialNumberDescriptor(_uVPHandle, readSerialNumber), "Mcp2221_GetSerialNumberDescriptor")) return;
+            //sn = new string(snChars);
+            Debug.Log("[Mcp2221] Descriptor Serial Number: " + readSerialNumber.ToString());
 
             if (CheckResultForError(MCP2221.Mcp2221_GetGpioSettings(_uVPHandle, RUNTIME_SETTINGS, _pinFunctions, _pinDirections, _pinValues), "Mcp2221_GetGpioSettings")) return;
             Debug.Log("[Mcp2221] Read Pin Functions: " + BitConverter.ToString(_pinFunctions));
@@ -273,12 +307,13 @@ namespace ZekstersLab.MCP2221
             _pinDirections[3] = MCP2221_GPDIR_INPUT;
             _pinValues[3] = NO_CHANGE;
 
-
+            await Task.Delay(200);
             if (CheckResultForError(MCP2221.Mcp2221_SetGpioSettings(_uVPHandle, RUNTIME_SETTINGS, _pinFunctions, _pinDirections, _pinValues), "Mcp2221_SetGpioSettings")) return;
             Debug.Log("[Mcp2221] Write Pin Functions: " + BitConverter.ToString(_pinFunctions));
             Debug.Log("[Mcp2221] Write Pin Directions: " + BitConverter.ToString(_pinDirections));
             Debug.Log("[Mcp2221] Write Pin Values: " + BitConverter.ToString(_pinValues));
 
+            await Task.Delay(200);
             if (CheckResultForError(MCP2221.Mcp2221_GetGpioSettings(_uVPHandle, RUNTIME_SETTINGS, _pinFunctions, _pinDirections, _pinValues), "Mcp2221_GetGpioSettings")) return;
             Debug.Log("[Mcp2221] Read Pin Functions: " + BitConverter.ToString(_pinFunctions));
             Debug.Log("[Mcp2221] Read Pin Directions: " + BitConverter.ToString(_pinDirections));
@@ -301,12 +336,16 @@ namespace ZekstersLab.MCP2221
 
             //if (CheckResultForError(Mcp2221_Close(_uVPHandle), "Mcp2221_Close", SetLastError = true)) return;
             //Debug.Log("[Mcp2221] Closed handle: " + _uVPHandle.ToString());
-
+            
             SetupI2C();
+            _pinValues[0] = MCP2221_GPVAL_LOW;
+            _pinValues[1] = MCP2221_GPVAL_LOW;
+            _pinValues[2] = MCP2221_GPVAL_LOW;
+            _pinValues[3] = MCP2221_GPVAL_LOW;
             _setupComplete = true;
         }
 
-        private void SetupI2C()
+        private async void SetupI2C()
         {
             if (_uVPHandle == null) return;
             if (_uVPHandle.IsInvalid) return;
@@ -315,7 +354,7 @@ namespace ZekstersLab.MCP2221
             _AW9523_ID = 0;
 
 
-
+            
             Debug.Log("Setting I2C speed = " + GPIO_AW9523_I2C_SPEED.ToString() + " hz / bps");
             if (CheckResultForError(MCP2221.Mcp2221_SetSpeed(_uVPHandle, GPIO_AW9523_I2C_SPEED), "Mcp2221_SetSpeed")) return;
 
@@ -424,6 +463,7 @@ namespace ZekstersLab.MCP2221
         // DoUpdate should be called once per frame
         public void DoUpdate()
         {
+            if (!_setupComplete) return;
             if (_uVPHandle == null) return;
 
             if (_uVPHandle.IsInvalid)
@@ -447,12 +487,14 @@ namespace ZekstersLab.MCP2221
 
         public bool GetPin(Pins pin, out byte pinValue)
         {
+            if (!_setupComplete) { pinValue = MCP2221_GPVAL_LOW; return false; }
             pinValue = _pinValues[(int)pin];
             return (lastError == E_NO_ERR);
         }
 
         public bool SetPin(Pins pin, byte pinValue)
         {
+            if(!_setupComplete) return false;
             if (_uVPHandle == null) return false;
             if (_uVPHandle.IsInvalid)
             {

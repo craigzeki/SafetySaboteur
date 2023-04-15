@@ -29,6 +29,7 @@ public class Saboteur : MonoBehaviour, iTakesDamage
     [SerializeField] private int _startHealth = 100;
     [SerializeField] private Transform _deathCam;
     [SerializeField] private float _deathCamTime = 4f;
+    [SerializeField] private AudioSource _deathAudio;
 
     private MaterializeOnSpawn _materializer;
 
@@ -144,6 +145,8 @@ public class Saboteur : MonoBehaviour, iTakesDamage
                     (_state == SaboteurState.LEARNING) ||
                     (_state == SaboteurState.SABOTAGING))
                 {
+                    //death sound
+                    if (_deathAudio != null) _deathAudio.Play();
                     // Death animation.
                     if (_rPGCharacterController.HandlerExists(HandlerTypes.Death))
                     {

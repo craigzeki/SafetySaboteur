@@ -17,6 +17,8 @@ public class SonicWeapon : MonoBehaviour, iTowerWeapon
     [SerializeField] private Transform _target;
     [SerializeField] private float _projectileSpeed = 0.1f;
 
+    [SerializeField] private AudioSource _weaponAudio;
+
     //defined at class scope instead of function scope to increase performance (no memory create / cleanup)
     private Coroutine _lerpFireCoR;
     private Coroutine _lerpStopFireCoR;
@@ -60,6 +62,7 @@ public class SonicWeapon : MonoBehaviour, iTowerWeapon
         _isFiring = true;
         _isFiringComplete = false;
         _switchFireTriggered = false;
+        if(_weaponAudio != null) _weaponAudio.Play();
     }
 
     private void StopFiring()
@@ -71,6 +74,7 @@ public class SonicWeapon : MonoBehaviour, iTowerWeapon
         _switchStopFireTriggered = false;
         if (_firingCoroutine != null) StopCoroutine(_firingCoroutine);
         _firingCoroutine = null;
+        if (_weaponAudio != null) _weaponAudio.Stop();
     }
 
     // Update is called once per frame

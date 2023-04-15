@@ -15,4 +15,5 @@ public class TowerTargetInfo
     [SerializeField] public Vector3 DirectionToTarget = Vector3.zero;
     [SerializeField] public int TargetUniqueID = INVALID_ID;
     [SerializeField] public iTakesDamage DamageReceiver;
+    [SerializeField] public int Priority = 0;
 }

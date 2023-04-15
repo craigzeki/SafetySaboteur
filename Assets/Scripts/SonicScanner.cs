@@ -18,7 +18,8 @@ public class SonicScanner : MonoBehaviour, iTowerScanner
 
     private float _closestDistance = 0f;
     private float _pointDistance = 0f;
-    private TowerTargetInfo _towerTargetInfo = new TowerTargetInfo();
+    [SerializeField] private TowerTargetInfo _towerTargetInfo = new TowerTargetInfo();
+    [SerializeField] private TowerTargetInfo _newTargetInfo = new TowerTargetInfo();
 
 
     public void ScannerUpdate()
@@ -39,41 +40,52 @@ public class SonicScanner : MonoBehaviour, iTowerScanner
                     if(_towerTargetInfo.TargetInView && _towerTargetInfo.TargetInRange)
                     {
                         _towerTargetInfo.TargetObjectPosition = _targetObjectPosition.position = targetPoint.Position;
-                        
+                        SetHitPointInRange(ref _towerTargetInfo, Color.red);
                     }
                     else
                     {
                         _closestDistance = 10000f;
-                        int prevID = _towerTargetInfo.TargetUniqueID;
-                        foreach (TargetPoint point in _targetPoints.Values)
+                        
+                        _newTargetInfo = new TowerTargetInfo();
+                        //_closestDistance = Vector3.Distance(_gunPoint.position, _towerTargetInfo.TargetHitPosition);
+                        foreach (TargetPoint newPoint in _targetPoints.Values)
                         {
-                            if (!point.IsActive) continue;
-                            if (_towerTargetInfo.TargetUniqueID == point.UniqueID) continue; //skip target that can't be hit
-                            _pointDistance = Vector3.Distance(_gunPoint.position, point.Position);
+                            if (!newPoint.IsActive) continue;
+                            if (_towerTargetInfo.TargetUniqueID == newPoint.UniqueID) continue; //skip target that can't be hit
+                            _pointDistance = Vector3.Distance(_gunPoint.position, newPoint.Position);
                             if (_pointDistance < _closestDistance)
                             {
+                                
                                 _closestDistance = _pointDistance;
-                                _towerTargetInfo.TargetObjectPosition = _targetObjectPosition.position = point.Position;
+                                _newTargetInfo.TargetObjectPosition = _targetObjectPosition.position = newPoint.Position;
 
-                                _towerTargetInfo.TargetUniqueID = point.UniqueID;
-                                _towerTargetInfo.TargetAquired = true;
-                                _towerTargetInfo.DamageReceiver = point.damageInterface;
+                                _newTargetInfo.TargetUniqueID = newPoint.UniqueID;
+                                _newTargetInfo.TargetAquired = true;
+                                _newTargetInfo.DamageReceiver = newPoint.damageInterface;
                             }
                         }
-                        if(_towerTargetInfo.TargetUniqueID == prevID) //we haven't found anything closer - so now need to update the data for this object as it was skipped in loop
+
+                        //now update the current target info so that it can be compared with
+                        if (_targetPoints.TryGetValue(_towerTargetInfo.TargetUniqueID, out TargetPoint oldPoint))
                         {
-                            if(_targetPoints.TryGetValue(prevID, out TargetPoint point))
-                            {
-                                
-                                _towerTargetInfo.TargetObjectPosition = _targetObjectPosition.position = point.Position;
-                                _towerTargetInfo.TargetUniqueID = point.UniqueID;
-                                _towerTargetInfo.TargetAquired = true;
-                                _towerTargetInfo.DamageReceiver = point.damageInterface;
-                            }
+
+                            _towerTargetInfo.TargetObjectPosition = _targetObjectPosition.position = oldPoint.Position;
+                            _towerTargetInfo.TargetUniqueID = oldPoint.UniqueID;
+                            _towerTargetInfo.TargetAquired = true;
+                            _towerTargetInfo.DamageReceiver = oldPoint.damageInterface;
                             
                         }
+
+                        SetHitPointInRange(ref _towerTargetInfo, Color.red);
+
+                        if (_newTargetInfo.TargetUniqueID != INVALID_ID) //we haven't found anything closer - so now need to update the data for this object as it was skipped in loop
+                        {
+                            SetHitPointInRange(ref _newTargetInfo, Color.green);
+                            if (_towerTargetInfo.Priority < _newTargetInfo.Priority) _towerTargetInfo = _newTargetInfo;
+                        }
+                        
                     }
-                    SetHitPointInRange(_targetObjectPosition.position);
+                    
 
                 }
                 else
@@ -101,50 +113,55 @@ public class SonicScanner : MonoBehaviour, iTowerScanner
                     }
                 }
 
-                SetHitPointInRange(_targetObjectPosition.position);
+                SetHitPointInRange(ref _towerTargetInfo, Color.red);
             }
         }
     }
 
-    private void SetHitPointInRange(Vector3 objectPoint)
-    {
-        Vector3 hitPoint = objectPoint;
-        
-        int targetLayerMask = LayerMask.GetMask("Drones", "Player");
-        int layerMask = ~0; //everything
-        _towerTargetInfo.DirectionToTarget = (objectPoint - _gunPoint.position).normalized;
+    
 
-        Vector3 samePlaneDirection = (new Vector3(objectPoint.x, _gunPoint.position.y, objectPoint.z) - _gunPoint.position).normalized;
+    private void SetHitPointInRange(ref TowerTargetInfo targetInfo, Color debugColor)
+    {
+        int targetLayerMask = LayerMask.GetMask("Drones", "Player");
+        int layerMask = ~LayerMask.GetMask("Towers"); //everything but the tower itself
+        targetInfo.DirectionToTarget = (targetInfo.TargetObjectPosition - _gunPoint.position).normalized;
+        targetInfo.Priority = 0;
+        Vector3 samePlaneDirection = (new Vector3(targetInfo.TargetObjectPosition.x, _gunPoint.position.y, targetInfo.TargetObjectPosition.z) - _gunPoint.position).normalized;
         //check field of view
         if (Vector3.Angle(_gunPoint.forward, samePlaneDirection) > _fieldOfViewDegrees)
         {
             Debug.Log("Out of view");
-            _towerTargetInfo.TargetInView = false;
+            targetInfo.TargetInView = false;
         }
         else
         {
-            _towerTargetInfo.TargetInView = true;
+            targetInfo.TargetInView = true;
+            targetInfo.Priority++;
         }
 
-        Ray ray = new Ray(_gunPoint.position, _towerTargetInfo.DirectionToTarget);
-        Debug.DrawRay(_gunPoint.position, _towerTargetInfo.DirectionToTarget * _range, Color.red);
+        Ray ray = new Ray(_gunPoint.position, targetInfo.DirectionToTarget);
+        Debug.DrawRay(_gunPoint.position, targetInfo.DirectionToTarget * _range, Color.red, 0.5f);
         if(Physics.Raycast(ray, out RaycastHit hit, _range, layerMask, QueryTriggerInteraction.Ignore))
         {
             if(((1 << hit.transform.gameObject.layer) & targetLayerMask) > 0)
             {
-                _towerTargetInfo.TargetHitPosition = _targetPoint.position = hit.point;
-                _towerTargetInfo.TargetInRange = true;
+                targetInfo.TargetHitPosition = _targetPoint.position = hit.point;
+                targetInfo.TargetInRange = true;
+                targetInfo.Priority++;
             }
             else
             {
-                _towerTargetInfo.TargetInRange = false;
+                //hidden behind something
+                targetInfo.TargetInRange = false;
+                targetInfo.TargetInView = false;
+                targetInfo.Priority = 0;
             }
             
         }
         else
         {
             //_towerTargetInfo.TargetHitPosition = _targetPoint.position = _gunPoint.position;
-            _towerTargetInfo.TargetInRange = false;
+            targetInfo.TargetInRange = false;
         }
 
     }

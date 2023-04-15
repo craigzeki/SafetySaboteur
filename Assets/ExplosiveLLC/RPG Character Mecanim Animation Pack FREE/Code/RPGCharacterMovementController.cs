@@ -8,6 +8,8 @@ namespace RPGCharacterAnims
 {
 	public class RPGCharacterMovementController : SuperStateMachine
     {
+        [SerializeField] private AudioSource _jumpAudio;
+
         // Components.
         private SuperCharacterController superCharacterController;
         private RPGCharacterController rpgCharacterController;
@@ -297,6 +299,7 @@ namespace RPGCharacterAnims
             animator.SetInteger(AnimationParameters.Jumping, 1);
             animator.SetAnimatorTrigger(AnimatorTrigger.JumpTrigger);
             canJump = false;
+            if (_jumpAudio != null) _jumpAudio.Play();
         }
 
         private void Jump_SuperUpdate()
@@ -335,6 +338,7 @@ namespace RPGCharacterAnims
             doublejumped = true;
             animator.SetInteger(AnimationParameters.Jumping, 3);
             animator.SetAnimatorTrigger(AnimatorTrigger.JumpTrigger);
+            if (_jumpAudio != null) _jumpAudio.Play();
         }
 
 		/// <summary>
