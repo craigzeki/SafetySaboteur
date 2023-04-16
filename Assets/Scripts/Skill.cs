@@ -44,6 +44,7 @@ public class Skill : MonoBehaviour
         if (_guiSkill == null) return;
         if (_guiSkill.HealthBar == null) return;
         _guiSkill.HealthBar.OnTargetHealthReached += HealthBarReachedTarget;
+        DoTransition(SkillState.DISABLED);
         initComplete = true;
     }
 
@@ -63,6 +64,8 @@ public class Skill : MonoBehaviour
         {
             case SkillState.DISABLED:
                 ZekiController.Instance?.SetButtonLEDState(_controllerButton, ZekiController.BUTTON_LED_STATE.LED_OFF);
+                _guiSkill.HealthBar.SetHealthPercent(1f, false);
+                _guiSkill.SetEnabled(false);
                 break;
             case SkillState.CHARGING:
                 if (_state == SkillState.DISABLED)
@@ -91,6 +94,11 @@ public class Skill : MonoBehaviour
                 break;
         }
         _newState = newState;
+    }
+
+    public void SkillReset()
+    {
+        DoTransition(SkillState.DISABLED);
     }
 
     public void UseSkill()

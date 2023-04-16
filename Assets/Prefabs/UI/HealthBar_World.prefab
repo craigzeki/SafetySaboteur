@@ -122,13 +122,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _image: {fileID: 760412745630982534}
-  _smoothTime: 0.3
+  _smoothTime: 0.1
   _targetTolerance: 0.001
   _maxColour: {r: 2, g: 0.7234349, b: 0, a: 1}
   _minColour: {r: 0.9411765, g: 0.03137255, b: 0, a: 1}
   _colourLerpStartPercent: 0.8
   _colourLerpEndPercent: 0.4
   _alwaysRotateToFaceCam: 1
+  _healthObject: {fileID: 0}
   _targetScale: 1
 --- !u!1 &760412747658849370
 GameObject:

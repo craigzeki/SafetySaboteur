@@ -5545,6 +5545,7 @@ GameObject:
   m_Component:
   - component: {fileID: 385114485}
   - component: {fileID: 385114484}
+  - component: {fileID: 385114486}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -5594,6 +5595,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &385114486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 385114483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70a8a306ac8c37447a1d7b024dfc069e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &391429501
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5670,6 +5683,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 414255281}
+  - component: {fileID: 414255282}
   m_Layer: 0
   m_Name: Skills
   m_TagString: Untagged
@@ -5696,6 +5710,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 30
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &414255282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 414255280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70a8a306ac8c37447a1d7b024dfc069e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &416326361
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10923,6 +10949,7 @@ GameObject:
   m_Component:
   - component: {fileID: 718072735}
   - component: {fileID: 718072734}
+  - component: {fileID: 718072736}
   m_Layer: 0
   m_Name: ZekiController
   m_TagString: Untagged
@@ -10959,6 +10986,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &718072736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718072733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70a8a306ac8c37447a1d7b024dfc069e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &731369477
 GameObject:
   m_ObjectHideFlags: 0
@@ -17491,6 +17530,7 @@ GameObject:
   - component: {fileID: 1218809368}
   - component: {fileID: 1218809367}
   - component: {fileID: 1218809366}
+  - component: {fileID: 1218809369}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -17548,6 +17588,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 27
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1218809369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218809365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70a8a306ac8c37447a1d7b024dfc069e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1222904731
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18615,6 +18667,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1333869227}
   - component: {fileID: 1333869226}
+  - component: {fileID: 1333869228}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -18637,7 +18690,7 @@ MonoBehaviour:
   _playerSpawnPoint: {fileID: 1000564369}
   _playerPrefab: {fileID: 2026599402024976189, guid: ff17520b613760b419e67b56506f0085,
     type: 3}
-  _droneArmyManager: {fileID: 0}
+  _droneArmyManager: {fileID: 599107178}
   _skills:
   - {fileID: 896361403}
   - {fileID: 629742386}
@@ -18662,6 +18715,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1333869228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1333869225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70a8a306ac8c37447a1d7b024dfc069e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1345674407
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19720,6 +19785,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1426289459}
   - component: {fileID: 1426289460}
+  - component: {fileID: 1426289461}
   m_Layer: 0
   m_Name: ScreenUI
   m_TagString: Untagged
@@ -19759,6 +19825,18 @@ MonoBehaviour:
   _canvasGameObjects:
   - {fileID: 1461187481}
   - {fileID: 2015660502}
+--- !u!114 &1426289461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426289458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70a8a306ac8c37447a1d7b024dfc069e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1429377993
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26810,6 +26888,7 @@ GameObject:
   - component: {fileID: 1894678379}
   - component: {fileID: 1894678378}
   - component: {fileID: 1894678377}
+  - component: {fileID: 1894678380}
   m_Layer: 0
   m_Name: DynamicAudioListener
   m_TagString: Untagged
@@ -26853,6 +26932,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 26
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1894678380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894678376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70a8a306ac8c37447a1d7b024dfc069e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1895555304
 PrefabInstance:
   m_ObjectHideFlags: 0

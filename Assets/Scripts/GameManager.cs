@@ -211,4 +211,13 @@ public class GameManager : MonoBehaviour
     {
         Application.Quit();
     }
+
+    private void LoadScene()
+    {
+
+        foreach(Skill skill in _skills)
+        {
+            skill.SkillReset();
+        }
+    }
 }
