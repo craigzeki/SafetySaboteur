@@ -1,9 +1,11 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,6 +17,9 @@ public class GameManager : MonoBehaviour
         GAMEOVER,
         NUM_OF_STATES
     }
+
+    [SerializeField] private List<String> _sceneNames = new List<String>();
+    [SerializeField] private CinemachineBrain _mainCam;
 
     [SerializeField] private Transform _playerSpawnPoint;
     [SerializeField] private GameObject _playerPrefab;
@@ -35,6 +40,7 @@ public class GameManager : MonoBehaviour
     private uint _droneSurvivedCount = 0;
     private uint _droneTotalCount = 0;
 
+    private int _currentScene = -1;
 
     private static GameManager instance;
 
@@ -49,6 +55,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject Player { get => _player; }
     public Skill[] Skills { get => _skills; }
+    public CinemachineBrain MainCam { get => _mainCam;  }
 
     public void SkillLearnt(Skill.SkillType skill)
     {
@@ -58,6 +65,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         if(_mouseCursor != null) Cursor.SetCursor(_mouseCursor, _cursorHotSpot, cursorMode);
+        LoadNextScene();
         UpdateUI();
     }
 
@@ -202,6 +210,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void RegisterSpawnPoint(Transform spawnPoint)
+    {
+        _playerSpawnPoint = spawnPoint;
+    }
+
+    public void RegisterDroneArmyManager(DroneArmyManager droneArmyManager)
+    {
+        _droneArmyManager = droneArmyManager;
+    }
+
     public void StartGame()
     {
         DoTransition(GAME_STATE.PLAYING);
@@ -212,12 +230,18 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
 
-    private void LoadScene()
+    private void LoadNextScene()
     {
 
-        foreach(Skill skill in _skills)
+        _currentScene++;
+        if (_currentScene < _sceneNames.Count)
         {
-            skill.SkillReset();
+            foreach (Skill skill in _skills)
+            {
+                skill.SkillReset();
+            }
+            SceneManager.LoadScene(_sceneNames[_currentScene]);
         }
+        else { _currentScene--; }
     }
 }

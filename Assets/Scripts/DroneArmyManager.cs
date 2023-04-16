@@ -28,20 +28,13 @@ public class DroneArmyManager : MonoBehaviour
     private void Awake()
     {
         CreateDroneList(_droneOrderOption);
-        GameManager.Instance.SetTotalDrones((uint)_droneOrder.Count);
+        
     }
 
-    private void Update()
+    private void Start()
     {
-        //if(Input.GetKeyUp(KeyCode.Space))
-        //{
-        //    StartSpawning();
-        //}
-
-        //if(Input.GetKeyUp(KeyCode.Escape))
-        //{
-        //    StopSpawning();
-        //}
+        GameManager.Instance.SetTotalDrones((uint)_droneOrder.Count);
+        GameManager.Instance.RegisterDroneArmyManager(this);
     }
 
 

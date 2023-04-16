@@ -53,6 +53,11 @@ public class CameraDirector : MonoBehaviour
 
     }
 
+    private void Start()
+    {
+        cameraBrain = GameManager.Instance.MainCam;
+    }
+
     // Update is called once per frame
     void Update()
     {
