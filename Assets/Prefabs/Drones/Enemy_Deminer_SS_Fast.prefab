@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 7554373691204633229}
   - component: {fileID: 5587414335899723773}
   - component: {fileID: 8894762652816312611}
+  - component: {fileID: 5234512703585766137}
   m_Layer: 7
   m_Name: Enemy_Deminer_SS_Fast
   m_TagString: Drone
@@ -344,6 +345,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &5234512703585766137
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8913073365006524126}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2, y: 1.17, z: 2.14}
+  m_Center: {x: 0, y: -0.00000014901161, z: 0.123459786}
 --- !u!1 &8913073365006524354
 GameObject:
   m_ObjectHideFlags: 0

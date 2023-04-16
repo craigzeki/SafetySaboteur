@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,8 @@ public class MenuCanvasController : MonoBehaviour, iCanvasController
     [SerializeField] private RectTransform _infoPanelRectTransform;
     [SerializeField] private RectTransform _buttonsRectTransform;
     [SerializeField] private Button _infoButton;
+    [SerializeField] private TextMeshProUGUI _versionText;
+    [SerializeField] private string _versionPrefix = "v";
 
     private bool _loaded = false;
     private Vector3 _menuPanelEndPos;
@@ -35,19 +38,25 @@ public class MenuCanvasController : MonoBehaviour, iCanvasController
         
         if(_infoPanelRectTransform != null)
         {
-            if(_infoPanelRectTransform.gameObject.TryGetComponent<Image>(out Image img))
-            {
-                _infoPanelEndColor = img.color;
-                _infoPanelStartColor = img.color;
-                _infoPanelStartColor.a = _infoPanelStartAlpha;
-                img.color = _infoPanelStartColor;
-            }
+            //if(_infoPanelRectTransform.gameObject.TryGetComponent<Image>(out Image img))
+            //{
+            //    _infoPanelEndColor = img.color;
+            //    _infoPanelStartColor = img.color;
+            //    _infoPanelStartColor.a = _infoPanelStartAlpha;
+            //    img.color = _infoPanelStartColor;
+            //}
+            _infoPanelRectTransform.gameObject.GetComponent<CanvasGroup>().alpha = 0;
             _infoPanelRectTransform.gameObject.SetActive(false);
         }
 
         if(_buttonsRectTransform != null)
         {
             _buttonsStartPos = _buttonsRectTransform.localPosition;
+        }
+
+        if(_versionText != null)
+        {
+            _versionText.text = _versionPrefix + Application.version.ToString();
         }
 
     }
@@ -91,14 +100,16 @@ public class MenuCanvasController : MonoBehaviour, iCanvasController
         {
             yield return new WaitForEndOfFrame();
         }
-        if (!LeanTween.isTweening(_infoPanelRectTransform)) _infoPanelRectTransform.LeanAlpha(_infoPanelEndColor.a, 0.5f).setEaseOutQuart().setOnComplete(callback);
+        if (!LeanTween.isTweening(_infoPanelRectTransform.gameObject)) LeanTween.alphaCanvas(_infoPanelRectTransform.gameObject.GetComponent<CanvasGroup>(), 1f, .5f).setEaseOutQuart().setOnComplete(callback);
+        //if (!LeanTween.isTweening(_infoPanelRectTransform)) _infoPanelRectTransform.LeanAlpha(_infoPanelEndColor.a, 0.5f).setEaseOutQuart().setOnComplete(callback);
         _infoSelectedAnniCoroutine = null;
+        
     }
 
     IEnumerator InfoDeSelectedAnni(Action callback)
     {
-        if (!LeanTween.isTweening(_infoPanelRectTransform)) _infoPanelRectTransform.LeanAlpha(_infoPanelStartColor.a, 0.5f).setEaseOutQuart();
-        
+        //if (!LeanTween.isTweening(_infoPanelRectTransform)) _infoPanelRectTransform.LeanAlpha(_infoPanelStartColor.a, 0.5f).setEaseOutQuart();
+        if (!LeanTween.isTweening(_infoPanelRectTransform.gameObject)) LeanTween.alphaCanvas(_infoPanelRectTransform.gameObject.GetComponent<CanvasGroup>(), 0f, .5f).setEaseOutQuart().setOnComplete(callback);
         while (LeanTween.isTweening(_infoPanelRectTransform))
         {
             yield return new WaitForEndOfFrame();

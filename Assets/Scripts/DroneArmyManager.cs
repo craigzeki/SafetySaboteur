@@ -28,19 +28,20 @@ public class DroneArmyManager : MonoBehaviour
     private void Awake()
     {
         CreateDroneList(_droneOrderOption);
+        GameManager.Instance.SetTotalDrones((uint)_droneOrder.Count);
     }
 
     private void Update()
     {
-        if(Input.GetKeyUp(KeyCode.Space))
-        {
-            StartSpawning();
-        }
+        //if(Input.GetKeyUp(KeyCode.Space))
+        //{
+        //    StartSpawning();
+        //}
 
-        if(Input.GetKeyUp(KeyCode.Escape))
-        {
-            StopSpawning();
-        }
+        //if(Input.GetKeyUp(KeyCode.Escape))
+        //{
+        //    StopSpawning();
+        //}
     }
 
 
@@ -111,5 +112,6 @@ public class DroneArmyManager : MonoBehaviour
         droneMovement.DroneSurvived -= OnDroneSurvived;
         Destroy(droneMovement.gameObject);
         _score += points;
+        GameManager.Instance.UpdateScore(points, true);
     }
 }

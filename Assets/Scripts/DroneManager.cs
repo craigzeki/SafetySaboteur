@@ -106,7 +106,7 @@ public class DroneManager : MonoBehaviour, iTakesDamage
 
     protected virtual void OnDroneSurvived()
     {
-        DroneSurvived?.Invoke(this, _points);
+        DroneSurvived?.Invoke(this, ((uint)Mathf.RoundToInt((_points * _currentHealth) / _maxHealth)));
 
     }
 

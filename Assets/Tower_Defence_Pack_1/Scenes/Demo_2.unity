@@ -8084,6 +8084,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f6817baa34e1ba4e8a0ce8240b5ec7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _buttonValues: 00000000
+  _buttonLedState: 00000000000000000000000000000000
 --- !u!4 &718072735
 Transform:
   m_ObjectHideFlags: 0
@@ -8712,6 +8714,7 @@ MonoBehaviour:
   _origin: {fileID: 1822949235}
   _target: {fileID: 932230854}
   _projectileSpeed: 40
+  _weaponAudio: {fileID: 0}
 --- !u!1001 &797321444
 PrefabInstance:
   m_ObjectHideFlags: 0

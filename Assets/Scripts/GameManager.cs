@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -16,13 +18,25 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Transform _playerSpawnPoint;
     [SerializeField] private GameObject _playerPrefab;
+    [SerializeField] private DroneArmyManager _droneArmyManager;
 
     [SerializeField] private Skill[] _skills = new Skill[(int)Skill.SkillType.NUM_OF_SKILLS];
 
+    [SerializeField] private Texture2D _mouseCursor;
+    [SerializeField] private Vector2 _cursorHotSpot;
+
+    [SerializeField] private TextMeshProUGUI _scoreText;
+    [SerializeField] private TextMeshProUGUI _dronesText;
+
     private GameObject _player;
     private GAME_STATE _state = GAME_STATE.INIT;
+    private CursorMode cursorMode = CursorMode.Auto;
+    private uint _score = 0;
+    private uint _droneSurvivedCount = 0;
+    private uint _droneTotalCount = 0;
 
-     private static GameManager instance;
+
+    private static GameManager instance;
 
     public static GameManager Instance
     {
@@ -41,9 +55,26 @@ public class GameManager : MonoBehaviour
         if (_skills[(int)skill].State == Skill.SkillState.DISABLED) _skills[(int)skill].SkillLearnt();
     }
 
+    private void Awake()
+    {
+        if(_mouseCursor != null) Cursor.SetCursor(_mouseCursor, _cursorHotSpot, cursorMode);
+        UpdateUI();
+    }
+
+    private void OnDestroy()
+    {
+        Cursor.SetCursor(null, Vector2.zero, cursorMode);
+    }
+
     private void Start()
     {
         DoTransition(GAME_STATE.MENU);
+    }
+
+    private void UpdateUI()
+    {
+        if (_dronesText != null) _dronesText.text = _droneSurvivedCount.ToString("00") + "/" + _droneTotalCount.ToString("00");
+        if (_scoreText != null) _scoreText.text = _score.ToString("000000");
     }
 
     private void SpawnPlayer()
@@ -77,6 +108,19 @@ public class GameManager : MonoBehaviour
         if (ZekiController.Instance.GetButtonState(ZekiController.BUTTON.BUTTON_2) == ZekiController.BUTTON_STATE.ON) _skills[(int)Skill.SkillType.FAULT_INJECT].UseSkill();
         if (ZekiController.Instance.GetButtonState(ZekiController.BUTTON.BUTTON_3) == ZekiController.BUTTON_STATE.ON) _skills[(int)Skill.SkillType.REDUNDANCY].UseSkill();
 
+    }
+
+    public void SetTotalDrones(uint totalDrones)
+    {
+        _droneTotalCount = totalDrones;
+        UpdateUI();
+    }
+
+    public void UpdateScore(uint points, bool incrementDroneCount = false)
+    {
+        _score += points;
+        if (incrementDroneCount) _droneSurvivedCount++;
+        UpdateUI();
     }
 
     private void DoTransition(GAME_STATE newState)
@@ -148,6 +192,7 @@ public class GameManager : MonoBehaviour
             case GAME_STATE.PLAYING:
                 CanvasManager.Instance.LoadCanvas(CanvasManager.CANVAS.IN_PLAY);
                 SpawnPlayer();
+                if (_droneArmyManager != null) _droneArmyManager.StartSpawning();
                 break;
             case GAME_STATE.GAMEOVER:
                 break;
