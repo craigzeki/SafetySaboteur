@@ -24,11 +24,14 @@ public class SkillBar : MonoBehaviour
     private Color _newColor;
     private Material _material;
     private bool _lerp = true;
+    private bool _barDisabled = false;
 
 
     public GameObject SkillObject { get => _skillObject; }
+    public bool GetBarDisabled { get => _barDisabled; }
 
     public event EventHandler<float> OnTargetSkillReached;
+    public event EventHandler OnBarDisabled;
 
     private void Awake()
     {
@@ -50,16 +53,23 @@ public class SkillBar : MonoBehaviour
         SetEnabled(_enabledAtStart);
     }
 
-   
+    public void SetBarDisabled()
+    {
+
+        BarDisabled();
+        gameObject.SetActive(false);
+    }
 
     public void SetEnabled(bool enabled)
     {
+        if (_barDisabled) return;
         if (_canvas != null) _canvas.enabled = enabled;
         
     }
 
     void Update()
     {
+        if (_barDisabled) return;
         if (_alwaysRotateToFaceCam)
         {
             transform.LookAt(Camera.main.transform);
@@ -99,6 +109,7 @@ public class SkillBar : MonoBehaviour
 
     public void SetSkillPercent(float percent, bool lerp = true)
     {
+        if (_barDisabled) return;
         _targetScale = Mathf.Clamp(percent, 0f, 1f) * _maxScale;
         _lerp = lerp;
         if (!lerp)
@@ -111,5 +122,11 @@ public class SkillBar : MonoBehaviour
     protected virtual void TargetSkillPercentReached(float skillPercent)
     {
         OnTargetSkillReached?.Invoke(this, skillPercent);
+    }
+
+    protected virtual void BarDisabled()
+    {
+        _barDisabled = true;
+        OnBarDisabled?.Invoke(this, EventArgs.Empty);
     }
 }

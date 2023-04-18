@@ -175,4 +175,24 @@ public class Tower : MonoBehaviour
     {
         DoStateActions();
     }
+
+    public void DoSabotage(Skill.SkillType _skill)
+    {
+        switch (_skill)
+        {
+            case Skill.SkillType.PRECISION:
+                _scanner.DoSabotage();
+                break;
+            case Skill.SkillType.SAFEOS:
+                break;
+            case Skill.SkillType.FAULT_INJECT:
+                break;
+            case Skill.SkillType.REDUNDANCY:
+                break;
+            case Skill.SkillType.NUM_OF_SKILLS:
+            default:
+                break;
+        }
+
+    }
 }

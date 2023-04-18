@@ -3827,6 +3827,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneNames:
   - Level1
+  - Level2
   _mainCam: {fileID: 831507342}
   _playerSpawnPoint: {fileID: 0}
   _playerPrefab: {fileID: 2026599402024976189, guid: ff17520b613760b419e67b56506f0085,

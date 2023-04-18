@@ -39,6 +39,8 @@ public class Skill : MonoBehaviour
 
     private bool initComplete = false;
 
+    public event EventHandler SkillUsed;
+
     private void Start()
     {
         if (_guiSkill == null) return;
@@ -135,6 +137,11 @@ public class Skill : MonoBehaviour
         {
             DoTransition(SkillState.READY);
         }
+    }
+
+    protected virtual void OnSkillUsed()
+    {
+        SkillUsed?.Invoke(this, EventArgs.Empty);
     }
 
 }

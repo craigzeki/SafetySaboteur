@@ -21,6 +21,7 @@ public class SonicScanner : MonoBehaviour, iTowerScanner
     [SerializeField] private TowerTargetInfo _towerTargetInfo = new TowerTargetInfo();
     [SerializeField] private TowerTargetInfo _newTargetInfo = new TowerTargetInfo();
 
+    private bool _limitedFoV = false;
 
     public void ScannerUpdate()
     {
@@ -122,7 +123,17 @@ public class SonicScanner : MonoBehaviour, iTowerScanner
 
     private void SetHitPointInRange(ref TowerTargetInfo targetInfo, Color debugColor)
     {
-        int targetLayerMask = LayerMask.GetMask("Drones", "Player");
+        int targetLayerMask;
+
+        if (_limitedFoV)
+        {
+            targetLayerMask = LayerMask.GetMask("Player");
+        }
+        else
+        {
+            targetLayerMask = LayerMask.GetMask("Drones", "Player");
+        }
+        
         int layerMask = ~LayerMask.GetMask("Towers"); //everything but the tower itself
         targetInfo.DirectionToTarget = (targetInfo.TargetObjectPosition - _gunPoint.position).normalized;
         targetInfo.Priority = 0;
@@ -217,5 +228,10 @@ public class SonicScanner : MonoBehaviour, iTowerScanner
                 _targetPoints.Add(other.gameObject.GetInstanceID(), new TargetPoint(other.gameObject.GetComponent<Collider>().ClosestPoint(transform.position), other.gameObject.GetInstanceID(), damageObject));
             }
         }
+    }
+
+    public void DoSabotage()
+    {
+        _limitedFoV = true;
     }
 }

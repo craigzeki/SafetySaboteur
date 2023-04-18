@@ -57,6 +57,8 @@ public class GameManager : MonoBehaviour
     public Skill[] Skills { get => _skills; }
     public CinemachineBrain MainCam { get => _mainCam;  }
 
+    public event EventHandler<Skill.SkillType> SkillUsed;
+
     public void SkillLearnt(Skill.SkillType skill)
     {
         if (_skills[(int)skill].State == Skill.SkillState.DISABLED) _skills[(int)skill].SkillLearnt();
@@ -93,6 +95,8 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.F1)) LoadNextScene();
+
         if (Input.GetKeyDown(KeyCode.Escape)) QuitGame();
 
         if(Input.GetKeyDown(KeyCode.Alpha0))
@@ -106,10 +110,30 @@ public class GameManager : MonoBehaviour
         //if (Input.GetKeyDown(KeyCode.Alpha4)) SkillLearnt(Skill.SkillType.REDUNDANCY);
 
         
-        if (Input.GetKeyDown(KeyCode.Alpha1)) _skills[(int)Skill.SkillType.PRECISION].UseSkill();
-        if (Input.GetKeyDown(KeyCode.Alpha2)) _skills[(int)Skill.SkillType.SAFEOS].UseSkill();
-        if (Input.GetKeyDown(KeyCode.Alpha3)) _skills[(int)Skill.SkillType.FAULT_INJECT].UseSkill();
-        if (Input.GetKeyDown(KeyCode.Alpha4)) _skills[(int)Skill.SkillType.REDUNDANCY].UseSkill();
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            _skills[(int)Skill.SkillType.PRECISION].UseSkill();
+            OnSkillUsed(Skill.SkillType.PRECISION);
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            _skills[(int)Skill.SkillType.SAFEOS].UseSkill();
+            OnSkillUsed(Skill.SkillType.SAFEOS);
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            _skills[(int)Skill.SkillType.FAULT_INJECT].UseSkill();
+            OnSkillUsed(Skill.SkillType.FAULT_INJECT);
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            _skills[(int)Skill.SkillType.REDUNDANCY].UseSkill();
+            OnSkillUsed(Skill.SkillType.REDUNDANCY);
+        }
+        
 
         if (ZekiController.Instance.GetButtonState(ZekiController.BUTTON.BUTTON_0) == ZekiController.BUTTON_STATE.ON) _skills[(int)Skill.SkillType.PRECISION].UseSkill();
         if (ZekiController.Instance.GetButtonState(ZekiController.BUTTON.BUTTON_1) == ZekiController.BUTTON_STATE.ON) _skills[(int)Skill.SkillType.SAFEOS].UseSkill();
@@ -243,5 +267,10 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene(_sceneNames[_currentScene]);
         }
         else { _currentScene--; }
+    }
+
+    protected virtual void OnSkillUsed(Skill.SkillType _skill)
+    {
+        SkillUsed?.Invoke(this, _skill);
     }
 }

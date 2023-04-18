@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,21 +33,23 @@ public class SkillTerminal : MonoBehaviour
         {
             percent = Mathf.Clamp(percent + percentStep, 0f, 1f);
 
-            _skillBar.SetSkillPercent(percent);
+            if(_skillBar != null) _skillBar.SetSkillPercent(percent);
 
 
 
             yield return new WaitForSeconds(LEARNING_PERIOD_MS / 1000f);
 
         }
-        _skillBar.SetSkillPercent(1f);
+        if (_skillBar != null)  _skillBar.SetSkillPercent(1f);
 
         if (_learningAudio != null) _learningAudio.Stop();
         if (_learningCompleteAudio != null) _learningCompleteAudio.Play();
         yield return new WaitForSeconds(LEARNING_COMPLETE_PAUSE);
-        _skillBar.SetSkillPercent(0f, false);
-        _skillBar.SetEnabled(false);
-        
+        if (_skillBar != null)
+        {
+            _skillBar.SetSkillPercent(0f, false);
+            _skillBar.SetEnabled(false);
+        }
     }
 
    
@@ -58,10 +61,12 @@ public class SkillTerminal : MonoBehaviour
             _skillBar = other.gameObject.GetComponentInChildren<SkillBar>();
             if(_skillBar != null)
             {
+                if (_skillBar.GetBarDisabled) return;
                 if (_learningAudio != null) _learningAudio.Play();
                 _skillBar.SetEnabled(true);
                 _skillBar.SetSkillPercent(0f, false);
                 _skillBar.OnTargetSkillReached += SkillBarReachedTarget;
+                _skillBar.OnBarDisabled += SkillBarDisabled;
                 ZekiController.Instance.SetButtonLEDState(GameManager.Instance.Skills[(int)_skillType].ControllerButton, ZekiController.BUTTON_LED_STATE.LED_GLOW);
                 if(_learningCorourtine != null) StopCoroutine(_learningCorourtine);
                 _learningCorourtine = StartCoroutine(DoLearning(_duration));
@@ -76,20 +81,27 @@ public class SkillTerminal : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             _skillBar = other.gameObject.GetComponentInChildren<SkillBar>();
-            if (_skillBar != null)
-            {
-                if (_learningAudio != null) _learningAudio.Stop();
-                _skillBar.OnTargetSkillReached -= SkillBarReachedTarget;
-                _skillBar.SetSkillPercent(0f, false);
-                if (GameManager.Instance.Skills[(int)_skillType].State == SkillState.DISABLED)
-                {
-                    ZekiController.Instance.SetButtonLEDState(GameManager.Instance.Skills[(int)_skillType].ControllerButton, ZekiController.BUTTON_LED_STATE.LED_OFF);
-                }
-                
-                _skillBar.SetEnabled(false);
-                if (_learningCorourtine != null) StopCoroutine(_learningCorourtine);
-            }
+            StopLearning();
         }
+    }
+
+    private void StopLearning()
+    {
+        if (_learningCorourtine != null) StopCoroutine(_learningCorourtine);
+        if (_learningAudio != null) _learningAudio.Stop();
+        if (GameManager.Instance.Skills[(int)_skillType].State == SkillState.DISABLED)
+        {
+            ZekiController.Instance.SetButtonLEDState(GameManager.Instance.Skills[(int)_skillType].ControllerButton, ZekiController.BUTTON_LED_STATE.LED_OFF);
+        }
+
+        if (_skillBar != null)
+        {
+            _skillBar.OnTargetSkillReached -= SkillBarReachedTarget;
+            _skillBar.OnBarDisabled -= SkillBarDisabled;
+            _skillBar.SetSkillPercent(0f, false);
+            _skillBar.SetEnabled(false);
+        }
+
     }
 
     private void SkillBarReachedTarget(object sender, float percent)
@@ -100,4 +112,11 @@ public class SkillTerminal : MonoBehaviour
             GameManager.Instance.SkillLearnt(_skillType);
         }
     }
+
+    private void SkillBarDisabled(object sender, EventArgs e)
+    {
+        StopLearning();
+        _skillBar = null;
+    }
+
 }

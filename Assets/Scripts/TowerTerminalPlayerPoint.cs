@@ -1,4 +1,5 @@
 using RPGCharacterAnims;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,16 +8,32 @@ using UnityEngine;
 
 public class TowerTerminalPlayerPoint : MonoBehaviour
 {
+    [SerializeField] private Tower _linkedTower;
+    [SerializeField] private GameObject[] _weaknessInfoPanels = new GameObject[(int)Skill.SkillType.NUM_OF_SKILLS];
     [SerializeField] private Outline _outline;
     [SerializeField] private Transform _playerRotation;
     private RPGCharacterController _rpgCharacterController;
     private bool _playerLocked = false;
+    private iWeaknessInfoPanel[] _iWeaknessInfoPanels = new iWeaknessInfoPanel[(int)Skill.SkillType.NUM_OF_SKILLS];
 
     private void Start()
     {
         _outline.enabled = false;
+        GameManager.Instance.SkillUsed += OnSkillUsed;
+
+        for(int i = 0; i < (int)Skill.SkillType.NUM_OF_SKILLS; i++)
+        {
+            _iWeaknessInfoPanels[i] = null;
+            if(_weaknessInfoPanels[i] != null) _iWeaknessInfoPanels[i] = _weaknessInfoPanels[i].GetComponent<iWeaknessInfoPanel>();
+        }
+
     }
 
+    private void OnDestroy()
+    {
+        if(GameManager.Instance != null) GameManager.Instance.SkillUsed -= OnSkillUsed;
+    }
+    
     private void OnTriggerEnter(Collider other)
     {
         if (_outline == null) return;
@@ -79,4 +96,15 @@ public class TowerTerminalPlayerPoint : MonoBehaviour
     {
         Debug.Log("BUTTON");
     }
+
+    private void OnSkillUsed(object sender, Skill.SkillType _skill)
+    {
+        if(_rpgCharacterController != null) //player in range
+        {
+            if (_iWeaknessInfoPanels[(int)_skill] != null) _iWeaknessInfoPanels[(int)_skill].OnSkillUsed();
+            if(_linkedTower != null) _linkedTower.DoSabotage(_skill);
+        }
+    }
+    
+    
 }

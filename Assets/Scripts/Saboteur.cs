@@ -25,6 +25,7 @@ public class Saboteur : MonoBehaviour, iTakesDamage
     [SerializeField] private Transform _playerAudioListenerPoint;
     [SerializeField] private Transform _playerFakeOrigin;
     [SerializeField] private HealthBar _healthBar;
+    [SerializeField] private SkillBar _skillBar;
     [SerializeField] private int _maxHealth = 100;
     [SerializeField] private int _startHealth = 100;
     [SerializeField] private Transform _deathCam;
@@ -145,6 +146,9 @@ public class Saboteur : MonoBehaviour, iTakesDamage
                     (_state == SaboteurState.LEARNING) ||
                     (_state == SaboteurState.SABOTAGING))
                 {
+                    //disable the health and skill bars
+                    if (_healthBar != null) _healthBar.gameObject.SetActive(false);
+                    if (_skillBar != null) _skillBar.gameObject.SetActive(false);
                     //death sound
                     if (_deathAudio != null) _deathAudio.Play();
                     // Death animation.

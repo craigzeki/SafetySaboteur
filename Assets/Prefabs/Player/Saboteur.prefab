@@ -637,6 +637,7 @@ MonoBehaviour:
   _playerAudioListenerPoint: {fileID: 671984859790038324}
   _playerFakeOrigin: {fileID: 670349205711733862}
   _healthBar: {fileID: 6912946496786323630}
+  _skillBar: {fileID: 4029462683408981998}
   _maxHealth: 200
   _startHealth: 200
   _deathCam: {fileID: 4320194842456001616}
@@ -1706,6 +1707,18 @@ PrefabInstance:
       objectReference: {fileID: 8766418200007290338}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b2f8fb2ac4b9fa47b2d7bd0f31864b9, type: 3}
+--- !u!114 &4029462683408981998 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4958062157252959825, guid: 2b2f8fb2ac4b9fa47b2d7bd0f31864b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 8297061757530554815}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06da90af874f77043b0adde930048ca7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!223 &8766418200007290338 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 760412747658849373, guid: 2b2f8fb2ac4b9fa47b2d7bd0f31864b9,
