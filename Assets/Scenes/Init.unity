@@ -3832,6 +3832,7 @@ MonoBehaviour:
   _playerSpawnPoint: {fileID: 0}
   _playerPrefab: {fileID: 2026599402024976189, guid: ff17520b613760b419e67b56506f0085,
     type: 3}
+  _playerStartLives: 3
   _droneArmyManager: {fileID: 0}
   _skills:
   - {fileID: 896361403}

@@ -94,6 +94,7 @@ public class Saboteur : MonoBehaviour, iTakesDamage
                 }
                 break;
             case SaboteurState.DEAD:
+                Destroy(this.gameObject);
                 break;
             case SaboteurState.NUM_OF_STATES:
             default:
@@ -162,9 +163,6 @@ public class Saboteur : MonoBehaviour, iTakesDamage
                 break;
             case SaboteurState.DEAD:
                 _state = newState;
-
-                Destroy(this.gameObject);
-                
                 break;
             case SaboteurState.NUM_OF_STATES:
             default:

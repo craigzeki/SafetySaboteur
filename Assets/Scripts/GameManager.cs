@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public enum GAME_STATE
     {
         INIT = 0,
+        RESET,
         MENU,
         PLAYING,
         GAMEOVER,
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Transform _playerSpawnPoint;
     [SerializeField] private GameObject _playerPrefab;
+    [SerializeField] private uint _playerStartLives = 3;
     [SerializeField] private DroneArmyManager _droneArmyManager;
 
     [SerializeField] private Skill[] _skills = new Skill[(int)Skill.SkillType.NUM_OF_SKILLS];
@@ -34,11 +36,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _dronesText;
 
     private GameObject _player;
+    private Saboteur _saboteur;
     private GAME_STATE _state = GAME_STATE.INIT;
     private CursorMode cursorMode = CursorMode.Auto;
     private uint _score = 0;
     private uint _droneSurvivedCount = 0;
     private uint _droneTotalCount = 0;
+    private uint _playerLives;
 
     private int _currentScene = -1;
 
@@ -78,7 +82,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        DoTransition(GAME_STATE.MENU);
+        DoTransition(GAME_STATE.RESET);
     }
 
     private void UpdateUI()
@@ -90,25 +94,30 @@ public class GameManager : MonoBehaviour
     private void SpawnPlayer()
     {
         if ((_playerSpawnPoint != null) && (_player == null)) _player = Instantiate(_playerPrefab, _playerSpawnPoint);
-        if (_player != null) CameraDirector.Instance.SetNewPlayer(_player);
+        if (_player != null)
+        {
+            if(_player.TryGetComponent<Saboteur>(out _saboteur))
+            {
+                _saboteur.StateChanged += OnPlayerStateChanged;
+            }
+            else
+            {
+                _saboteur = null;
+            }
+            CameraDirector.Instance.SetNewPlayer(_player);
+        }
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F1)) LoadNextScene();
+        //if (Input.GetKeyDown(KeyCode.F1)) LoadNextScene();
 
         if (Input.GetKeyDown(KeyCode.Escape)) QuitGame();
 
-        if(Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            SpawnPlayer();
-        }
-
-        //if (Input.GetKeyDown(KeyCode.Alpha1)) SkillLearnt(Skill.SkillType.PRECISION);
-        //if (Input.GetKeyDown(KeyCode.Alpha2)) SkillLearnt(Skill.SkillType.SAFEOS);
-        //if (Input.GetKeyDown(KeyCode.Alpha3)) SkillLearnt(Skill.SkillType.FAULT_INJECT);
-        //if (Input.GetKeyDown(KeyCode.Alpha4)) SkillLearnt(Skill.SkillType.REDUNDANCY);
-
+        //if(Input.GetKeyDown(KeyCode.Alpha0))
+        //{
+        //    SpawnPlayer();
+        //}
         
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -140,6 +149,8 @@ public class GameManager : MonoBehaviour
         if (ZekiController.Instance.GetButtonState(ZekiController.BUTTON.BUTTON_2) == ZekiController.BUTTON_STATE.ON) _skills[(int)Skill.SkillType.FAULT_INJECT].UseSkill();
         if (ZekiController.Instance.GetButtonState(ZekiController.BUTTON.BUTTON_3) == ZekiController.BUTTON_STATE.ON) _skills[(int)Skill.SkillType.REDUNDANCY].UseSkill();
 
+        DoStateActions();
+
     }
 
     public void SetTotalDrones(uint totalDrones)
@@ -155,6 +166,27 @@ public class GameManager : MonoBehaviour
         UpdateUI();
     }
 
+    private void DoStateActions()
+    {
+        switch (_state)
+        {
+            case GAME_STATE.INIT:
+                break;
+            case GAME_STATE.RESET:
+                DoTransition(GAME_STATE.MENU);
+                break;
+            case GAME_STATE.MENU:
+                break;
+            case GAME_STATE.PLAYING:
+                break;
+            case GAME_STATE.GAMEOVER:
+                break;
+            case GAME_STATE.NUM_OF_STATES:
+            default:
+                break;
+        }
+    }
+
     private void DoTransition(GAME_STATE newState)
     {
         if (_state == newState) return;
@@ -163,6 +195,11 @@ public class GameManager : MonoBehaviour
         switch (newState)
         {
             case GAME_STATE.INIT:
+                break;
+            case GAME_STATE.RESET:
+                DoExitActions(_state);
+                DoEntryActions(newState);
+                _state = newState;
                 break;
             case GAME_STATE.MENU:
                 DoExitActions(_state);
@@ -196,7 +233,10 @@ public class GameManager : MonoBehaviour
         switch (state)
         {
             case GAME_STATE.INIT:
-                CanvasManager.Instance.SetCanvasEnable(CanvasManager.CANVAS.IN_PLAY, false);
+                
+                break;
+            case GAME_STATE.RESET:
+                
                 break;
             case GAME_STATE.MENU:
                 CanvasManager.Instance.UnLoadCanvas(CanvasManager.CANVAS.MENU, () => { CanvasManager.Instance.SetCanvasEnable(CanvasManager.CANVAS.MENU, false); });
@@ -217,6 +257,14 @@ public class GameManager : MonoBehaviour
         switch (state)
         {
             case GAME_STATE.INIT:
+                break;
+            case GAME_STATE.RESET:
+                CanvasManager.Instance.SetCanvasEnable(CanvasManager.CANVAS.IN_PLAY, false);
+                _playerLives = _playerStartLives;
+                _droneSurvivedCount = 0;
+                _droneTotalCount = 0;
+                UpdateScore(0, false);
+                LoadStartScene();
                 break;
             case GAME_STATE.MENU:
                 CanvasManager.Instance.LoadCanvas(CanvasManager.CANVAS.MENU);
@@ -269,8 +317,66 @@ public class GameManager : MonoBehaviour
         else { _currentScene--; }
     }
 
+    private void ResetScene()
+    {
+        foreach (Skill skill in _skills)
+        {
+            skill.SkillReset();
+        }
+        SceneManager.LoadScene(_sceneNames[_currentScene]);
+    }
+
+    private void LoadStartScene()
+    {
+        foreach (Skill skill in _skills)
+        {
+            skill.SkillReset();
+        }
+        _currentScene = 0;
+        SceneManager.LoadScene(_sceneNames[_currentScene]);
+    }
+
     protected virtual void OnSkillUsed(Skill.SkillType _skill)
     {
         SkillUsed?.Invoke(this, _skill);
+    }
+
+    protected virtual void OnPlayerStateChanged(object sender, SaboteurStateChangedEventArgs saboteurStateChangedEventArgs)
+    {
+        switch (saboteurStateChangedEventArgs.state)
+        {
+            case Saboteur.SaboteurState.INIT:
+                break;
+            case Saboteur.SaboteurState.MATERIALIZING:
+                break;
+            case Saboteur.SaboteurState.ROAMING:
+                break;
+            case Saboteur.SaboteurState.LEARNING:
+                break;
+            case Saboteur.SaboteurState.SABOTAGING:
+                break;
+            case Saboteur.SaboteurState.DYING:
+                break;
+            case Saboteur.SaboteurState.DEAD:
+                
+                if (_saboteur != null) _saboteur.StateChanged -= OnPlayerStateChanged;
+
+                _playerLives = (uint)Mathf.Clamp((int)_playerLives - 1, (int)0, (int)_playerStartLives);
+                
+                if(_playerLives > 0)
+                {
+                    _player = null;
+                    _saboteur = null;
+                    SpawnPlayer();
+                }
+                else
+                {
+                    //Gameover
+                }
+                break;
+            case Saboteur.SaboteurState.NUM_OF_STATES:
+            default:
+                break;
+        }
     }
 }
