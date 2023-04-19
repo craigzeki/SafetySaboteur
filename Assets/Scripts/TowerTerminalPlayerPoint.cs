@@ -57,6 +57,8 @@ public class TowerTerminalPlayerPoint : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.State != GameManager.GAME_STATE.PLAYING) return;
+
         if (_outline == null) return;
 
         if (_rpgCharacterController != null)

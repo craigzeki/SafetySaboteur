@@ -72,7 +72,7 @@ public class DroneManager : MonoBehaviour, iTakesDamage
 
     void Update()
     {
-
+        if (GameManager.Instance.State != GameManager.GAME_STATE.PLAYING) return;
         if (_pathCreator != null && _moving)
         {
             _distanceTravelled += _speed * Time.deltaTime;
@@ -216,6 +216,11 @@ public class DroneManager : MonoBehaviour, iTakesDamage
     public int GetHealth()
     {
         return _currentHealth;
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.Instance.OnDroneDestroy();
     }
 }
 

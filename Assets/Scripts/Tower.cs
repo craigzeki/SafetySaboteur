@@ -173,7 +173,7 @@ public class Tower : MonoBehaviour
 
     void Update()
     {
-        DoStateActions();
+        if(GameManager.Instance.State == GameManager.GAME_STATE.PLAYING) DoStateActions();
     }
 
     public void DoSabotage(Skill.SkillType _skill)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ZekstersLab.Helpers;
 using PathCreation;
+using Unity.VisualScripting;
 
 public class DroneArmyManager : MonoBehaviour
 {
@@ -21,18 +22,15 @@ public class DroneArmyManager : MonoBehaviour
     [SerializeField] uint _score = 0;
 
 
-    private List<GameObject> _droneOrder = new List<GameObject>();
+    [SerializeField] private List<GameObject> _droneOrder = new List<GameObject>();
     private uint _droneId;
     private Coroutine _SpawnDrones;
+
+  
 
     private void Awake()
     {
         CreateDroneList(_droneOrderOption);
-        
-    }
-
-    private void Start()
-    {
         GameManager.Instance.SetTotalDrones((uint)_droneOrder.Count);
         GameManager.Instance.RegisterDroneArmyManager(this);
     }
@@ -76,9 +74,17 @@ public class DroneArmyManager : MonoBehaviour
         DroneManager droneMovement = null;
         _droneId = 0;
 
-        foreach(GameObject dronePrefab in _droneOrder)
+        for(int i = 0; i < _droneOrder.Count; i++)
+        //foreach(GameObject dronePrefab in _droneOrder)
         {
-            GameObject drone = Instantiate(dronePrefab, this.transform);
+            Debug.Log("SPAWNING DRONE: " + i.ToString());
+            while(GameManager.Instance.State != GameManager.GAME_STATE.PLAYING)
+            {
+                yield return new WaitForEndOfFrame();
+                
+            }
+            GameObject drone = Instantiate(_droneOrder[i], this.transform);
+            Debug.Log("SPAWNED DRONE: " + i.ToString());
             if(drone != null)
             {
                 
@@ -97,6 +103,8 @@ public class DroneArmyManager : MonoBehaviour
             }
             yield return new WaitForSeconds(_timeBetweenSpawns);
         }
+
+        Debug.Log("SpawnDrones Complete");
     }
 
     private void OnDroneSurvived(object sender, uint points)

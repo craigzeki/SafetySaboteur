@@ -270,6 +270,10 @@ public class SonicWeapon : MonoBehaviour, iTowerWeapon
         damageReceiver.TakeDamage(damage);
         while (damageReceiver.GetHealth() > 0)
         {
+            while(GameManager.Instance.State != GameManager.GAME_STATE.PLAYING)
+            {
+                yield return new WaitForEndOfFrame();
+            }
             yield return new WaitForSeconds(damageInterval);
             damageReceiver.TakeDamage(damage);
         }

@@ -65,6 +65,8 @@ public class Saboteur : MonoBehaviour, iTakesDamage
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.Instance.State != GameManager.GAME_STATE.PLAYING) return;
+
         if (Input.GetKeyDown(KeyCode.Alpha8)) DoStateTransition(SaboteurState.LEARNING);
         if (Input.GetKeyDown(KeyCode.Alpha7)) DoStateTransition(SaboteurState.SABOTAGING);
         if (Input.GetKeyDown(KeyCode.Alpha9)) DoStateTransition(SaboteurState.DEAD);

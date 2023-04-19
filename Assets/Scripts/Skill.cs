@@ -121,6 +121,11 @@ public class Skill : MonoBehaviour
 
         while(elapsedTime < duration)
         {
+            while(GameManager.Instance.State != GameManager.GAME_STATE.PLAYING)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
             percent = Mathf.Clamp(percent + percentStep, 0f, 1f);
             
             _guiSkill.HealthBar.SetHealthPercent(percent);

@@ -31,6 +31,11 @@ public class SkillTerminal : MonoBehaviour
         Debug.Log("Duration: " + duration.ToString());
         while (!_learningComplete)
         {
+            while(GameManager.Instance.State != GameManager.GAME_STATE.PLAYING)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
             percent = Mathf.Clamp(percent + percentStep, 0f, 1f);
 
             if(_skillBar != null) _skillBar.SetSkillPercent(percent);

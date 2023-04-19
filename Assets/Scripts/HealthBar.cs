@@ -57,6 +57,7 @@ public class HealthBar : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.State != GameManager.GAME_STATE.PLAYING) return;
         if (_barDisabled) return;
 
         if(_alwaysRotateToFaceCam)

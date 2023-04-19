@@ -9,6 +9,8 @@ public class CanvasManager : MonoBehaviour
     {
         MENU = 0,
         IN_PLAY,
+        GAME_OVER,
+        LEVEL_COMPLETE,
         NUM_OF_CANVASES
     }
 
