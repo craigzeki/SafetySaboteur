@@ -14,18 +14,29 @@ public class SonicRotator : MonoBehaviour, iTowerRotator
     [SerializeField] private float _ySpeed = 1f;
     [SerializeField] private float _zSpeed = 1f;
     [SerializeField] private float _tolerance = 0.1f;
+    
 
     private Vector3 _targetDirection = Vector3.zero;
     private Quaternion _targetRotation = Quaternion.identity;
     private Vector3 _rotationDelta = Vector3.zero;
     private Vector3 _tempRotation;
+
+    private bool _isBroken = false;
+
+    public void DoSabotage()
+    {
+        _isBroken = true;
+    }
+
     public void RotateTowards(Vector3 direction)
     {
+        
         _targetDirection = direction;
     }
 
     public void UpdateRotator()
     {
+        if (_isBroken) _targetDirection = Vector3.down;
        
         _targetRotation = Quaternion.LookRotation(_targetDirection, Vector3.up);
         _rotationDelta = _targetRotation.eulerAngles - _aimer.rotation.eulerAngles;

@@ -52,6 +52,8 @@ public class GameManager : MonoBehaviour
     private uint _droneSurvivedCount = 0;
     [SerializeField] private uint _droneLevelCount = 0;
     private uint _droneTotalCount = 0;
+    private uint _totalDronesEver = 0;
+    private uint _totalDronesSurvivedEver = 0;
     private uint _playerLives;
 
     private int _currentScene = -1;
@@ -102,7 +104,7 @@ public class GameManager : MonoBehaviour
     {
         if (_dronesText != null) _dronesText.text = _droneSurvivedCount.ToString("00") + "/" + _droneTotalCount.ToString("00");
         if (_scoreText != null) _scoreText.text = _score.ToString("000000");
-        if (_gameOverDronesText != null) _gameOverDronesText.text = "Drones Saved: " + _droneSurvivedCount.ToString("00") + "/" + _droneTotalCount.ToString("00");
+        if (_gameOverDronesText != null) _gameOverDronesText.text = "Drones Saved: " + _totalDronesSurvivedEver.ToString("00") + "/" + _totalDronesEver.ToString("00");
         if (_gameOverScoreText != null) _gameOverScoreText.text = "Score: " + _score.ToString("000000");
         if (_levelCompleteDronesText != null) _levelCompleteDronesText.text = "Drones Saved: " + _droneSurvivedCount.ToString("00") + "/" + _droneTotalCount.ToString("00");
         if (_levelCompleteScoreText != null) _levelCompleteScoreText.text = "Score: " + _score.ToString("000000");
@@ -202,13 +204,19 @@ public class GameManager : MonoBehaviour
     public void SetTotalDrones(uint totalDrones)
     {
         _droneTotalCount = totalDrones;
+        _totalDronesEver += _droneTotalCount;
         UpdateUI();
     }
 
     public void UpdateScore(uint points, bool incrementDroneCount = false)
     {
         _score += points;
-        if (incrementDroneCount) _droneSurvivedCount++;
+        if (incrementDroneCount)
+        {
+            _droneSurvivedCount++;
+            _totalDronesSurvivedEver++;
+        }
+        
         UpdateUI();
     }
 
@@ -326,6 +334,8 @@ public class GameManager : MonoBehaviour
                 _droneSurvivedCount = 0;
                 _droneTotalCount = 0;
                 _droneLevelCount = 0;
+                _totalDronesEver = 0;
+                _totalDronesSurvivedEver = 0;
                 _score = 0;
                 UpdateScore(0, false);
                 UpdateLivesText();
@@ -401,6 +411,9 @@ public class GameManager : MonoBehaviour
             }
             _player = null;
             _droneLevelCount = 0;
+            _droneTotalCount = 0;
+            _droneSurvivedCount = 0;
+
 
             SceneManager.LoadScene(_sceneNames[_currentScene]);
             //DoTransition(GAME_STATE.PLAYING);

@@ -13714,7 +13714,7 @@ MonoBehaviour:
   _dronePrefabs:
   - {fileID: 126950, guid: 9615ba6ae7848514cb2257765fb684ad, type: 3}
   - {fileID: 8913073365006524126, guid: 73b19934feebd744abd444a80c528589, type: 3}
-  _droneQtys: 0800000008000000
+  _droneQtys: 0600000006000000
   _pathCreator: {fileID: 1522662750}
   _timeBetweenSpawns: 5
   _droneOrderOption: 1

@@ -141,7 +141,8 @@ MonoBehaviour:
   _moving: 0
   _droneID: 0
   _survivedDistanceThreshold: 0.1
-  _explosionAudio: {fileID: 3668268632861429966}
+  _audioPrefab: {fileID: 350959402663659090, guid: ffdf2f56365384e47a453a44add6fb9f,
+    type: 3}
 --- !u!64 &7554373691204633229
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -795,12 +796,6 @@ PrefabInstance:
 --- !u!4 &3377934105283168862 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4931932225404244691, guid: ec0b1189e28a8344d9f22a8feac53847,
-    type: 3}
-  m_PrefabInstance: {fileID: 7679036562743564429}
-  m_PrefabAsset: {fileID: 0}
---- !u!82 &3668268632861429966 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 6375168474904840259, guid: ec0b1189e28a8344d9f22a8feac53847,
     type: 3}
   m_PrefabInstance: {fileID: 7679036562743564429}
   m_PrefabAsset: {fileID: 0}

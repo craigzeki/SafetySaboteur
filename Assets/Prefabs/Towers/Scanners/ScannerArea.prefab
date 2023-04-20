@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8778717335137247056}
   - component: {fileID: 7135901021305629102}
   - component: {fileID: 4677461918921531769}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: ScannerArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64,3 +64,21 @@ MonoBehaviour:
   _range: 7
   _fieldOfViewDegrees: 55
   _inactiveThreshold: 5
+  _towerTargetInfo:
+    TargetAquired: 0
+    TargetInRange: 0
+    TargetInView: 0
+    TargetObjectPosition: {x: 0, y: 0, z: 0}
+    TargetHitPosition: {x: 0, y: 0, z: 0}
+    DirectionToTarget: {x: 0, y: 0, z: 0}
+    TargetUniqueID: 0
+    Priority: 0
+  _newTargetInfo:
+    TargetAquired: 0
+    TargetInRange: 0
+    TargetInView: 0
+    TargetObjectPosition: {x: 0, y: 0, z: 0}
+    TargetHitPosition: {x: 0, y: 0, z: 0}
+    DirectionToTarget: {x: 0, y: 0, z: 0}
+    TargetUniqueID: 0
+    Priority: 0

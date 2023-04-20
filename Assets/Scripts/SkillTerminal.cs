@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
+using UnityEngine.UI;
 using static Skill;
 
 [RequireComponent(typeof(SphereCollider))]
@@ -11,6 +13,8 @@ public class SkillTerminal : MonoBehaviour
     [SerializeField] private float _duration = 5f;
     [SerializeField] private AudioSource _learningAudio;
     [SerializeField] private AudioSource _learningCompleteAudio;
+    [SerializeField] private GameObject _iconCanvas;
+    [SerializeField] private Sprite[] _sprites = new Sprite[(int)Skill.SkillType.NUM_OF_SKILLS];
     
     private SkillBar _skillBar;
 
@@ -22,6 +26,16 @@ public class SkillTerminal : MonoBehaviour
     private const float LEARNING_COMPLETE_PAUSE = 1f;
 
     private bool _learningComplete = false;
+
+    private void Awake()
+    {
+        _iconCanvas.GetComponentInChildren<Image>().sprite = _sprites[(int)_skillType];
+    }
+
+    private void Update()
+    {
+        _iconCanvas.transform.LookAt(Camera.main.transform);
+    }
 
     IEnumerator DoLearning(float duration)
     {

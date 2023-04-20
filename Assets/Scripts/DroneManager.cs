@@ -24,7 +24,10 @@ public class DroneManager : MonoBehaviour, iTakesDamage
     [SerializeField] private uint _droneID;
     [SerializeField] private float _survivedDistanceThreshold = 0.1f;
 
-    [SerializeField] private AudioSource _explosionAudio;
+    //[SerializeField] private AudioSource _explosionAudio;
+    [SerializeField] private GameObject _audioPrefab;
+    private AudioPlayer _audioPlayer;
+    private GameObject _audioPlayerGO;
 
     private Coroutine _lerpCoroutine;
     private float _lerpTimeElapsed = 0f;
@@ -51,6 +54,8 @@ public class DroneManager : MonoBehaviour, iTakesDamage
     {
         _currentHealth = _startHealth;
         if (_healthBar != null) _healthBar.OnTargetHealthReached += HealthBarReachedTarget;
+        if (_audioPrefab != null) _audioPlayerGO = Instantiate(_audioPrefab, transform.position, transform.rotation);
+        if (_audioPlayerGO != null) _audioPlayer = _audioPlayerGO.GetComponent<AudioPlayer>();
     }
 
     void Start()
@@ -183,30 +188,15 @@ public class DroneManager : MonoBehaviour, iTakesDamage
         if(Mathf.Approximately(percent, 0f))
         {
             _isDead = true;
-            
-            if(_explosionCoroutine == null) _explosionCoroutine = StartCoroutine(Explode());
+
+            _audioPlayerGO.transform.position = transform.position;
+            _audioPlayerGO.transform.rotation = transform.rotation;
+            _audioPlayer.StartAudio();
+            Destroy(this.gameObject);
         }
     }
 
-    IEnumerator Explode()
-    {
-        if (_explosionAudio != null)
-        {
-            _explosionAudio.Play();
-            //do explosion
-            while (_explosionAudio.isPlaying)
-            {
-                yield return null;
-            }
-        }
-        else
-        {
-            yield return null;
-        }
-        
-
-        Destroy(this.gameObject);
-    }
+    
 
     public bool GetIsDead()
     {
@@ -220,7 +210,12 @@ public class DroneManager : MonoBehaviour, iTakesDamage
 
     private void OnDestroy()
     {
-        GameManager.Instance.OnDroneDestroy();
+        if(GameManager.Instance != null) GameManager.Instance.OnDroneDestroy();
+    }
+
+    public Transform GetTransform()
+    {
+        return this.gameObject.transform;
     }
 }
 

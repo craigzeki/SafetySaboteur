@@ -200,6 +200,7 @@ public class Saboteur : MonoBehaviour, iTakesDamage
     {
         if (Mathf.Approximately(percent, 0f))
         {
+            _rPGCharacterController.Unlock(true, true);
             DoStateTransition(SaboteurState.DYING);
         }
     }
@@ -212,6 +213,11 @@ public class Saboteur : MonoBehaviour, iTakesDamage
     public int GetHealth()
     {
         return _currentHealth;
+    }
+
+    public Transform GetTransform()
+    {
+        return this.gameObject.transform;
     }
 }
 

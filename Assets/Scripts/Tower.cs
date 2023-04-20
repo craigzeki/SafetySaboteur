@@ -21,6 +21,7 @@ public class Tower : MonoBehaviour
     [SerializeField] private GameObject _scannerObject;
     [SerializeField] private GameObject _rotatorObject;
     [SerializeField] private GameObject _weaponObject;
+    [SerializeField] private bool _continuousShot = true;
     [SerializeField] private int _damage = 5;
     [SerializeField] private float _damageInterval = 1f;
 
@@ -102,17 +103,24 @@ public class Tower : MonoBehaviour
                         (!_targetInfo.TargetInRange) ||
                         (!_targetInfo.TargetInView))
                     {
-                        _weapon.Stop();
+                        _weapon?.Stop();
                         NewState = TowerState.SCANNING;
                     }
                     else
                     {
-                        _weapon.FireContinuous(_damage, _damageInterval, _targetInfo.DamageReceiver);
+                        if(_continuousShot) _weapon?.FireContinuous(_damage, _damageInterval, _targetInfo.DamageReceiver);
+                        else
+                        {
+                            if(_weapon?.IsLoaded() == true)
+                            {
+                                _weapon?.FireSingle(_damage, _targetInfo.DamageReceiver);
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    _weapon.Stop();
+                    _weapon?.Stop();
                     NewState = TowerState.SCANNING;
                 }
                 _scanner.ScannerUpdate();
@@ -174,7 +182,7 @@ public class Tower : MonoBehaviour
     void Update()
     {
         if (GameManager.Instance.State == GameManager.GAME_STATE.PLAYING) DoStateActions();
-        else _weapon.Stop();
+        else _weapon?.Stop();
     }
 
     public void DoSabotage(Skill.SkillType _skill)
@@ -187,6 +195,7 @@ public class Tower : MonoBehaviour
             case Skill.SkillType.SAFEOS:
                 break;
             case Skill.SkillType.FAULT_INJECT:
+                _rotator.DoSabotage();
                 break;
             case Skill.SkillType.REDUNDANCY:
                 break;

@@ -1533,7 +1533,7 @@ MonoBehaviour:
         m_MethodName: DoNavigate
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 6797369134777912170}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -11947,7 +11947,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a75960e474fab14db1cbc0db21794c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _panelToHide: {fileID: 1153407660484476821}
+  _panelToHide: {fileID: 6797369134777912170}
 --- !u!1 &8621185604647576417
 GameObject:
   m_ObjectHideFlags: 0
@@ -12944,7 +12944,7 @@ MonoBehaviour:
         m_MethodName: DoNavigate
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 1153407660484476821}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0

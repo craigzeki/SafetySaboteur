@@ -278,4 +278,14 @@ public class SonicWeapon : MonoBehaviour, iTowerWeapon
             damageReceiver.TakeDamage(damage);
         }
     }
+
+    public bool IsLoaded()
+    {
+        return true;
+    }
+
+    public void FireSingle(int damage, Transform targetObject)
+    {
+        return;
+    }
 }
