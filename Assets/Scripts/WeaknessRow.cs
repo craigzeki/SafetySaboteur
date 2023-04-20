@@ -11,6 +11,8 @@ public class WeaknessRow : MonoBehaviour
     [SerializeField] private Color _lockedColor;
     [SerializeField] private Color _unlockedColor;
 
+    [SerializeField] private Button _lockedButton;
+
     public void SetPadlockState(bool locked)
     {
         if(locked)
@@ -23,6 +25,13 @@ public class WeaknessRow : MonoBehaviour
             _padlock.sprite = _unlockedSprite;
             _padlock.color = _unlockedColor;
         }
+    }
+
+    public void SetInfoState(bool enabled)
+    {
+        
+        if(_lockedButton != null) _lockedButton.interactable = enabled;
+        
     }
 
 }

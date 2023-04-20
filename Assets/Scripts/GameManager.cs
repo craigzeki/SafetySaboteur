@@ -147,26 +147,38 @@ public class GameManager : MonoBehaviour
 
         if ((Input.GetKeyDown(KeyCode.Alpha1)) || (ZekiController.Instance.GetButtonState(ZekiController.BUTTON.BUTTON_0) == ZekiController.BUTTON_STATE.ON))
         {
-            _skills[(int)Skill.SkillType.PRECISION].UseSkill();
-            OnSkillUsed(Skill.SkillType.PRECISION);
+            if (_skills[(int)Skill.SkillType.PRECISION].State == Skill.SkillState.READY)
+            {
+                _skills[(int)Skill.SkillType.PRECISION].UseSkill();
+                OnSkillUsed(Skill.SkillType.PRECISION);
+            }
         }
 
         if ((Input.GetKeyDown(KeyCode.Alpha2)) || (ZekiController.Instance.GetButtonState(ZekiController.BUTTON.BUTTON_1) == ZekiController.BUTTON_STATE.ON))
         {
-            _skills[(int)Skill.SkillType.SAFEOS].UseSkill();
-            OnSkillUsed(Skill.SkillType.SAFEOS);
+            if (_skills[(int)Skill.SkillType.SAFEOS].State == Skill.SkillState.READY)
+            {
+                _skills[(int)Skill.SkillType.SAFEOS].UseSkill();
+                OnSkillUsed(Skill.SkillType.SAFEOS);
+            }
         }
 
         if ((Input.GetKeyDown(KeyCode.Alpha3)) || (ZekiController.Instance.GetButtonState(ZekiController.BUTTON.BUTTON_2) == ZekiController.BUTTON_STATE.ON))
         {
-            _skills[(int)Skill.SkillType.FAULT_INJECT].UseSkill();
-            OnSkillUsed(Skill.SkillType.FAULT_INJECT);
+            if (_skills[(int)Skill.SkillType.FAULT_INJECT].State == Skill.SkillState.READY)
+            {
+                _skills[(int)Skill.SkillType.FAULT_INJECT].UseSkill();
+                OnSkillUsed(Skill.SkillType.FAULT_INJECT);
+            }
         }
 
         if ((Input.GetKeyDown(KeyCode.Alpha4)) || (ZekiController.Instance.GetButtonState(ZekiController.BUTTON.BUTTON_3) == ZekiController.BUTTON_STATE.ON))
         {
-            _skills[(int)Skill.SkillType.REDUNDANCY].UseSkill();
-            OnSkillUsed(Skill.SkillType.REDUNDANCY);
+            if (_skills[(int)Skill.SkillType.REDUNDANCY].State == Skill.SkillState.READY)
+            {
+                _skills[(int)Skill.SkillType.REDUNDANCY].UseSkill();
+                OnSkillUsed(Skill.SkillType.REDUNDANCY);
+            }
         }
     }
 
@@ -313,9 +325,11 @@ public class GameManager : MonoBehaviour
                 _playerLives = _playerStartLives;
                 _droneSurvivedCount = 0;
                 _droneTotalCount = 0;
+                _droneLevelCount = 0;
                 _score = 0;
                 UpdateScore(0, false);
                 UpdateLivesText();
+                DisableSkills();
                 LoadStartScene();
                 break;
             case GAME_STATE.MENU:
@@ -334,10 +348,19 @@ public class GameManager : MonoBehaviour
             case GAME_STATE.LEVEL_COMPLETE:
                 CameraDirector.Instance.SetCamera(CameraDirector.CameraList.MenuCam);
                 CanvasManager.Instance.LoadCanvas(CanvasManager.CANVAS.LEVEL_COMPLETE);
+                DisableSkills();
                 break;
             case GAME_STATE.NUM_OF_STATES:
             default:
                 break;
+        }
+    }
+
+    private void DisableSkills()
+    {
+        foreach(Skill skill in _skills)
+        {
+            if (skill != null) skill.SkillReset();
         }
     }
 

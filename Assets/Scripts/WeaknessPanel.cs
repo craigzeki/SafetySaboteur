@@ -5,6 +5,8 @@ using UnityEngine;
 public class WeaknessPanel : MonoBehaviour
 {
     [SerializeField] private WeaknessRow[] _weaknessRows = new WeaknessRow[(int)Skill.SkillType.NUM_OF_SKILLS];
+    [SerializeField] private GameObject[] _weaknessInfoPanels = new GameObject[(int)Skill.SkillType.NUM_OF_SKILLS];
+    public WeaknessRow[] WeaknessRows { get => _weaknessRows; }
 
     private void OnGUI()
     {
@@ -13,4 +15,14 @@ public class WeaknessPanel : MonoBehaviour
             _weaknessRows[i].SetPadlockState(GameManager.Instance.Skills[i].State != Skill.SkillState.READY);
         }
     }
+
+    private void Start()
+    {
+        foreach (GameObject panel in _weaknessInfoPanels)
+        {
+            panel.SetActive(false);
+        }
+    }
+
+
 }

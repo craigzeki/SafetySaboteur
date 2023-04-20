@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class PrecisionPanel : MonoBehaviour, iWeaknessInfoPanel
 {
+    [SerializeField] private TextMeshProUGUI _protectedModeText;
+    [SerializeField] private string _protectedEnabledText = "TRUE";
+    [SerializeField] private string _protectedDisabledText = "FALSE";
     [SerializeField] private TextMeshProUGUI _activeModeText;
     [SerializeField] private string _startupMode = "FLOAT";
     [SerializeField] private string _sabotagedMode = "INTEGER";
@@ -18,4 +21,30 @@ public class PrecisionPanel : MonoBehaviour, iWeaknessInfoPanel
         _activeModeText.color = _sabotagedColor;
     }
 
+    private void Awake()
+    {
+        _protectedModeText.text =  _protectedDisabledText ;
+        _protectedModeText.color = _sabotagedColor;
+    }
+
+    public void SetDependantWeaknessState(Skill.SkillType skillType, bool state)
+    {
+        switch (skillType)
+        {
+            case Skill.SkillType.PRECISION:
+                break;
+            case Skill.SkillType.SAFEOS:
+                _protectedModeText.text = state ? _protectedEnabledText : _protectedDisabledText;
+                _protectedModeText.color = state ? _startupColor : _sabotagedColor;
+                break;
+            case Skill.SkillType.FAULT_INJECT:
+                break;
+            case Skill.SkillType.REDUNDANCY:
+                
+                break;
+            case Skill.SkillType.NUM_OF_SKILLS:
+            default:
+                break;
+        }
+    }
 }

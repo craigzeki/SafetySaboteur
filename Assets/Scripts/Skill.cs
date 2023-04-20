@@ -68,6 +68,7 @@ public class Skill : MonoBehaviour
                 ZekiController.Instance?.SetButtonLEDState(_controllerButton, ZekiController.BUTTON_LED_STATE.LED_OFF);
                 _guiSkill.HealthBar.SetHealthPercent(1f, false);
                 _guiSkill.SetEnabled(false);
+                _state = newState;
                 break;
             case SkillState.CHARGING:
                 if (_state == SkillState.DISABLED)

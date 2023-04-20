@@ -65,7 +65,8 @@ public class Saboteur : MonoBehaviour, iTakesDamage
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.Instance.State != GameManager.GAME_STATE.PLAYING) return;
+        if (GameManager.Instance.State != GameManager.GAME_STATE.PLAYING) { _rPGCharacterController.Lock(true, true, false, 0, 0); return; }
+
 
         if (Input.GetKeyDown(KeyCode.Alpha8)) DoStateTransition(SaboteurState.LEARNING);
         if (Input.GetKeyDown(KeyCode.Alpha7)) DoStateTransition(SaboteurState.SABOTAGING);
@@ -84,6 +85,7 @@ public class Saboteur : MonoBehaviour, iTakesDamage
                 }
                 break;
             case SaboteurState.ROAMING:
+                
                 break;
             case SaboteurState.LEARNING:
                 break;

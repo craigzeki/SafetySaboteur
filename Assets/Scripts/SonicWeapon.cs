@@ -100,16 +100,16 @@ public class SonicWeapon : MonoBehaviour, iTowerWeapon
        
         //_previousButtonState = _currentButtonState;
 
-        if (Input.GetKeyUp(KeyCode.F) || _switchFireTriggered)
-        {
+        //if (Input.GetKeyUp(KeyCode.F) || _switchFireTriggered)
+        //{
 
-            StartFiring();
-        }
+        //    StartFiring();
+        //}
 
-        if(Input.GetKeyUp(KeyCode.G) || _switchStopFireTriggered)
-        {
-            StopFiring();
-        }
+        //if(Input.GetKeyUp(KeyCode.G) || _switchStopFireTriggered)
+        //{
+        //    StopFiring();
+        //}
 
         //if(_isFiring)
         //{

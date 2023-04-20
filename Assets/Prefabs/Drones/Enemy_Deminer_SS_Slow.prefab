@@ -289,9 +289,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _healthBar: {fileID: 6163256264094814284}
-  _maxHealth: 100
-  _startHealth: 100
-  _points: 100
+  _maxHealth: 160
+  _startHealth: 160
+  _points: 160
   _pathCreator: {fileID: 0}
   _endOfPathInstruction: 2
   _speed: 1.5
